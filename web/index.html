@@ -1,0 +1,2329 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VaultLineage — Envelope-Encrypted AI Event Store, ML Opt-Out Gate &amp; Crypto-Shred Deletion Engine</title>
+  <meta name="description" content="Serverless AWS Applied AI Customer Content Storage &amp; Compliance Platform: SQLite WAL + Per-Tenant KMS Envelope Encryption (5,182.4 ev/s), Real-Time ML Opt-Out Gate (0.0% leakage across 1,200 events), Purpose-Bound Access Control (0.028 ms p50), and GDPR/CCPA Crypto-Shredding (2.805 ms) with Live Amazon Bedrock Nova Audit." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-paper: #FAF7F2;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F2ECE1;
+      --bg-obsidian: #141413;
+      --bg-code: #121417;
+      --text-code: #F4F4F5;
+      --ink: #141413;
+      --ink-muted: #52514E;
+      --border: #18181B;
+      --shadow: 4px 4px 0px #18181B;
+      --shadow-sm: 2px 2px 0px #18181B;
+      --accent-main: #15803D;
+      --accent-ink: #FFFFFF;
+      --accent-soft: #DCFCE7;
+      --accent-bright: #4ADE80;
+      --blue: #1D4ED8;
+      --blue-soft: #DBEAFE;
+      --pass: #059669;
+      --pass-soft: #D1FAE5;
+      --fail: #DC2626;
+      --fail-soft: #FEE2E2;
+      --warn: #B45309;
+      --warn-soft: #FEF3C7;
+      --purple: #6D28D9;
+      --purple-soft: #EDE9FE;
+      --dot-color: rgba(24, 24, 27, 0.13);
+    }
+
+    [data-theme="dark"] {
+      --bg-paper: #0E1210;
+      --bg-card: #151B18;
+      --bg-subtle: #1E2722;
+      --bg-obsidian: #090C0A;
+      --bg-code: #090C0B;
+      --text-code: #E4E4E7;
+      --ink: #F4F4F5;
+      --ink-muted: #A1A1AA;
+      --border: #52525B;
+      --shadow: 4px 4px 0px #000000;
+      --shadow-sm: 2px 2px 0px #000000;
+      --accent-main: #22C55E;
+      --accent-ink: #07130B;
+      --accent-soft: #0F291A;
+      --accent-bright: #4ADE80;
+      --blue: #60A5FA;
+      --blue-soft: #1E293B;
+      --pass: #34D399;
+      --pass-soft: #064E3B;
+      --fail: #F87171;
+      --fail-soft: #450A0A;
+      --warn: #FBBF24;
+      --warn-soft: #451A03;
+      --purple: #C4B5FD;
+      --purple-soft: #2E1065;
+      --dot-color: rgba(255, 255, 255, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-paper);
+      background-image: radial-gradient(var(--dot-color) 1.25px, transparent 1.25px);
+      background-size: 20px 20px;
+      color: var(--ink);
+      line-height: 1.55;
+      padding-bottom: 4rem;
+    }
+
+    .serif { font-family: 'Newsreader', Georgia, serif; }
+    .mono { font-family: 'Martian Mono', monospace; }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Sticky Top Navigation */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 120;
+      background: var(--bg-paper);
+      border-bottom: 2px solid var(--border);
+      padding: 0.72rem 0;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    /* Sticky Jump-to-Section TOC Bar */
+    .toc-bar {
+      position: sticky;
+      top: 56px;
+      z-index: 110;
+      background: var(--bg-subtle);
+      border-bottom: 2px solid var(--border);
+      padding: 0.45rem 0;
+    }
+
+    .toc-inner {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: thin;
+    }
+
+    .toc-label {
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-right: 0.3rem;
+    }
+
+    .toc-link {
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border: 1.5px solid var(--border);
+      background: var(--bg-card);
+      color: var(--ink);
+      text-decoration: none;
+      transition: background 0.12s ease, transform 0.08s ease;
+    }
+
+    .toc-link:hover {
+      background: var(--accent-soft);
+      color: var(--accent-main);
+      transform: translateY(-1px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .brand-badge {
+      background: var(--accent-main);
+      color: var(--accent-ink);
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.22rem 0.58rem;
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn, .nav-pill {
+      font-family: 'Schibsted Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.81rem;
+      padding: 0.44rem 0.82rem;
+      border: 2px solid var(--border);
+      background: var(--bg-card);
+      color: var(--ink);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.12s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn:hover, .nav-pill:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn:active, .nav-pill:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+
+    .btn-accent {
+      background: var(--accent-main);
+      color: var(--accent-ink);
+    }
+
+    .btn-obsidian {
+      background: #18181B;
+      color: #FAF7F2;
+    }
+
+    [data-theme="dark"] .btn-obsidian {
+      background: var(--accent-main);
+      color: var(--accent-ink);
+    }
+
+    .btn-secondary { background: var(--bg-subtle); }
+    .btn-danger { background: var(--fail); color: #FFFFFF; }
+    .btn-danger-soft { background: var(--fail-soft); color: var(--fail); }
+    .btn-sm { padding: 0.3rem 0.58rem; font-size: 0.73rem; }
+
+    section[id], main[id] {
+      scroll-margin-top: 112px;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 2.2rem 0 2rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .hero-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.95rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.28rem 0.68rem;
+      background: var(--accent-soft);
+      color: var(--accent-main);
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .runtime-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.28rem 0.68rem;
+      background: var(--bg-card);
+      color: var(--ink);
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--pass);
+      display: inline-block;
+    }
+
+    h1 {
+      font-size: clamp(1.9rem, 3.6vw, 2.88rem);
+      font-weight: 800;
+      line-height: 1.09;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.85rem;
+    }
+
+    .hero-sub {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: clamp(1.12rem, 1.9vw, 1.32rem);
+      color: var(--ink-muted);
+      max-width: 1030px;
+      margin-bottom: 1.2rem;
+    }
+
+    .headline-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-bottom: 1.3rem;
+    }
+
+    .headline-pill {
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.32rem 0.65rem;
+      background: var(--bg-obsidian);
+      color: #FAF7F2;
+      border: 2px solid var(--border);
+    }
+
+    .headline-pill span {
+      color: var(--accent-bright);
+      font-weight: 700;
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+      gap: 1rem;
+      margin-top: 1.1rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 1.25rem;
+    }
+
+    .kpi-card {
+      padding: 1rem 1.15rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--accent-main);
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .kpi-val {
+      font-family: 'Martian Mono', monospace;
+      font-size: 1.36rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-top: 0.25rem;
+    }
+
+    .kpi-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-top: 0.2rem;
+    }
+
+    .kpi-sub {
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.69rem;
+      color: var(--ink-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Pipeline Banner */
+    .pipeline-bar {
+      margin-top: 1.35rem;
+      background: var(--bg-obsidian);
+      color: #FAF7F2;
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 0.9rem 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .pipe-step {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .pipe-num {
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: var(--accent-main);
+      color: var(--accent-ink);
+      padding: 0.14rem 0.44rem;
+      border: 1.5px solid #FAF7F2;
+    }
+
+    .pipe-arrow {
+      color: var(--accent-bright);
+      font-family: 'Martian Mono', monospace;
+      font-weight: 700;
+    }
+
+    /* Content Sections */
+    .section {
+      padding: 2rem 0 1.7rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-header {
+      margin-bottom: 1.15rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .section-desc {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1.1rem;
+      color: var(--ink-muted);
+      max-width: 880px;
+      margin-top: 0.2rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.1rem;
+    }
+
+    .walkthrough-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-top: 1.15rem;
+    }
+
+    @media (max-width: 1020px) {
+      .grid-3, .walkthrough-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .grid-3, .walkthrough-grid { grid-template-columns: 1fr; }
+    }
+
+    .step-badge {
+      display: inline-block;
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.69rem;
+      font-weight: 700;
+      padding: 0.2rem 0.52rem;
+      background: var(--accent-main);
+      color: var(--accent-ink);
+      border: 1.5px solid var(--border);
+      margin-bottom: 0.58rem;
+    }
+
+    .walkthrough-card h3 {
+      font-size: 1.02rem;
+      font-weight: 800;
+      margin-bottom: 0.4rem;
+    }
+
+    .walkthrough-card p {
+      font-size: 0.86rem;
+      color: var(--ink-muted);
+    }
+
+    /* Tab Switcher */
+    .tabs-wrapper {
+      padding: 2rem 0 1.8rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .tab-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.4rem;
+    }
+
+    @media (max-width: 960px) {
+      .tab-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 580px) {
+      .tab-bar { grid-template-columns: 1fr; }
+    }
+
+    .tab-btn {
+      text-align: left;
+      padding: 0.9rem 1rem;
+      background: var(--bg-card);
+      color: var(--ink);
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.12s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.28rem;
+    }
+
+    .tab-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--shadow);
+    }
+
+    .tab-btn.active {
+      background: var(--accent-main);
+      color: var(--accent-ink);
+      box-shadow: var(--shadow);
+      transform: translate(-1px, -1px);
+    }
+
+    .tab-btn-eyebrow {
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.67rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      opacity: 0.88;
+    }
+
+    .tab-btn-title {
+      font-size: 0.93rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .tab-btn-metric {
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      opacity: 0.92;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .sim-header {
+      margin-bottom: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .sim-title {
+      font-size: 1.44rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .sim-desc {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1.08rem;
+      color: var(--ink-muted);
+      max-width: 860px;
+      margin-top: 0.22rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.05fr 1.25fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    .grid-equal {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .grid-2, .grid-equal { grid-template-columns: 1fr; }
+    }
+
+    /* Tags & Status Pills */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.18rem 0.5rem;
+      border: 1.5px solid var(--border);
+      text-transform: uppercase;
+    }
+
+    .tag-pass { background: var(--pass-soft); color: var(--pass); }
+    .tag-fail { background: var(--fail-soft); color: var(--fail); }
+    .tag-warn { background: var(--warn-soft); color: var(--warn); }
+    .tag-blue { background: var(--blue-soft); color: var(--blue); }
+    .tag-accent { background: var(--accent-main); color: var(--accent-ink); }
+    .tag-accent-soft { background: var(--accent-soft); color: var(--accent-main); }
+    .tag-purple { background: var(--purple-soft); color: var(--purple); }
+
+    /* Code & JSON Pre Blocks */
+    .code-box {
+      background: var(--bg-code);
+      color: var(--text-code);
+      border: 2px solid var(--border);
+      padding: 0.9rem 1rem;
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.73rem;
+      line-height: 1.52;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-subtle);
+      border: 2px solid var(--border);
+      border-bottom: none;
+      padding: 0.45rem 0.8rem;
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.71rem;
+      font-weight: 700;
+    }
+
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    textarea, select, input[type="text"] {
+      width: 100%;
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.76rem;
+      padding: 0.62rem 0.75rem;
+      background: var(--bg-paper);
+      color: var(--ink);
+      border: 2px solid var(--border);
+      line-height: 1.48;
+    }
+
+    textarea:focus, select:focus, input[type="text"]:focus {
+      outline: 2px solid var(--accent-main);
+      outline-offset: 1px;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      border: 2px solid var(--border);
+      background: var(--bg-card);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.79rem;
+    }
+
+    th, td {
+      padding: 0.58rem 0.7rem;
+      text-align: left;
+      border-bottom: 1.5px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--bg-subtle);
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.69rem;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr.clickable-row { cursor: pointer; transition: background 0.1s ease; }
+    tr.clickable-row:hover { background: var(--bg-subtle); }
+    tr.selected-row { background: var(--accent-soft); }
+    tr.winner-row { background: var(--accent-soft); font-weight: 600; }
+
+    /* Tenant Cards */
+    .tenant-card {
+      border: 2px solid var(--border);
+      background: var(--bg-paper);
+      padding: 0.75rem 0.85rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .tenant-card.shredded {
+      background: var(--fail-soft);
+      opacity: 0.92;
+    }
+
+    /* Verdict Banner */
+    .verdict-banner {
+      border: 2px solid var(--border);
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.9rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .verdict-allow { background: var(--pass-soft); }
+    .verdict-deny { background: var(--fail-soft); }
+    .verdict-warn { background: var(--warn-soft); }
+
+    /* Progress / Benchmark Bars */
+    .bar-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      margin: 0.85rem 0;
+    }
+
+    .bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.24rem;
+    }
+
+    .bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 18px;
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bar-fill { height: 100%; transition: width 0.28s ease; }
+    .bar-fill-accent { background: var(--accent-main); }
+    .bar-fill-pass { background: var(--pass); }
+    .bar-fill-blue { background: var(--blue); }
+
+    .memo-box {
+      background: var(--bg-paper);
+      border: 2px solid var(--border);
+      padding: 0.95rem 1.05rem;
+      font-size: 0.87rem;
+      line-height: 1.58;
+      white-space: pre-line;
+    }
+
+    .footer {
+      margin-top: 2.5rem;
+      padding-top: 1.4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.83rem;
+      color: var(--ink-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Sticky Topbar -->
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="#studio-tabs" class="brand">
+        <span class="brand-badge">VAULTLINEAGE v1.0</span>
+        <span>VaultLineage</span>
+      </a>
+      <nav class="nav-links" aria-label="Portfolio Links">
+        <a class="nav-pill" href="https://d3bfhuibgzllcf.cloudfront.net" target="_blank" rel="noopener">AgentGuard ↗</a>
+        <a class="nav-pill" href="https://d2gltlwyzbnbxr.cloudfront.net" target="_blank" rel="noopener">QuickSpaces ↗</a>
+        <a class="btn btn-obsidian" href="https://github.com/ritwikareddykancharla/vault-lineage-storage" target="_blank" rel="noopener">
+          <span>★ GitHub Repo</span>
+        </a>
+        <button type="button" class="btn btn-secondary" id="themeToggleBtn" aria-label="Toggle Dark or Light Mode">
+          <span id="themeIcon">🌙</span>
+          <span id="themeLabel">Dark Mode</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Sticky Jump-to-Section TOC -->
+  <nav class="toc-bar" aria-label="Jump to Section Table of Contents">
+    <div class="container toc-inner">
+      <span class="toc-label">Jump To:</span>
+      <a class="toc-link" href="#problem-statement">01 · Problem Statement</a>
+      <a class="toc-link" href="#architecture">02 · Excalidraw Architecture</a>
+      <a class="toc-link" href="#what-i-implemented">03 · What I Implemented</a>
+      <a class="toc-link" href="#studio-tabs">04 · Live 4-Tab Studio</a>
+      <a class="toc-link" href="#why-it-wins">05 · Why It Wins</a>
+      <a class="toc-link" href="#studio-tabs" onclick="switchTab('benchmarks')">06 · Measured Benchmarks</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section (100% Populated from benchmarks/latest_results.json) -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-top-row">
+        <div class="eyebrow">🔐 AWS CloudFront + Private S3 (OAC) + Python 3.12 SQLite Lambda + Amazon Bedrock Nova</div>
+        <div class="runtime-pill" id="runtimeModeBadge">
+          <span class="pulse-dot"></span>
+          <span id="runtimeModeText">Connecting to AWS CloudFront /api/health...</span>
+        </div>
+      </div>
+
+      <h1>VaultLineage — Envelope-Encrypted AI Event Store, ML Opt-Out Gate &amp; Crypto-Shred Deletion Engine</h1>
+      <p class="hero-sub">
+        Serverless customer-content storage &amp; compliance infrastructure for <strong>AWS Applied AI Core Services</strong>: uniting
+        <strong>SQLite WAL Event Partitions</strong>, <strong>Per-Tenant KMS Envelope Encryption</strong>,
+        <strong>Deterministic VPC PII Tokenization</strong>, <strong>Real-Time Customer AI Training Opt-Out Gates</strong>,
+        and <strong>GDPR Art. 17 / CCPA Cryptographic Right-to-Delete (<code>RTBF</code>)</strong> with downstream shard purge &amp; live
+        <strong>Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)</strong> compliance auditing.
+      </p>
+
+      <div class="headline-pills">
+        <div class="headline-pill"><span>0.0%</span> Opt-Out Leakage (0 / 1,200 SQLite Events)</div>
+        <div class="headline-pill"><span>5,182.4 ev/s</span> Envelope Seal + SQLite WAL Ingest (0.164 ms p50)</div>
+        <div class="headline-pill"><span>2.805 ms</span> Mean Crypto-Shred + SQLite Lineage Purge</div>
+        <div class="headline-pill"><span>1,374 / 1,374</span> SHA-256 Hash-Chained Audit Entries Verified</div>
+      </div>
+
+      <div class="kpi-strip">
+        <div class="card kpi-card">
+          <div class="kpi-val" id="kpiLeakVal">0.0%</div>
+          <div class="kpi-label">Opted-Out Tenant Leakage in ML Shards</div>
+          <div class="kpi-sub" id="kpiLeakSub">0 / 1,200 benchmark events · 1,800 PII spans tokenized (0 leaks)</div>
+        </div>
+        <div class="card kpi-card">
+          <div class="kpi-val" id="kpiPurgeVal">100.0%</div>
+          <div class="kpi-label">Downstream Shard Lineage Purge on Delete</div>
+          <div class="kpi-sub" id="kpiPurgeSub">0 residual records · 2.805 ms mean SQLite + DEK cascade</div>
+        </div>
+        <div class="card kpi-card">
+          <div class="kpi-val" id="kpiCryptoVal">KMS-AEAD-256</div>
+          <div class="kpi-label">Per-Tenant DEK Crypto-Shredding</div>
+          <div class="kpi-sub" id="kpiCryptoSub">5,182.4 ev/s ingest (0.164 ms p50) · 180/180 shredded locked</div>
+        </div>
+        <div class="card kpi-card">
+          <div class="kpi-val" id="kpiAuthVal">0.028 ms</div>
+          <div class="kpi-label">Purpose-Bound Access Authorization (p50)</div>
+          <div class="kpi-sub" id="kpiAuthSub">0.039 ms p95 (300 probes) · 170/170 unauthorized blocked (100%)</div>
+        </div>
+      </div>
+
+      <div class="pipeline-bar" role="region" aria-label="VaultLineage Lifecycle Architecture Flow">
+        <div class="pipe-step"><span class="pipe-num">01</span> KMS Envelope Ingest + PII Vault</div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step"><span class="pipe-num">02</span> SQLite Live Consent Gate</div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step"><span class="pipe-num">03</span> Purpose-Bound ML Snapshot Builder</div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step"><span class="pipe-num">04</span> Crypto-Shred RTBF + Bedrock Nova Audit</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01. CLEAR PROBLEM STATEMENT -->
+  <section id="problem-statement" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">01 · Clear Problem Statement</h2>
+          <p class="section-desc">
+            Why Applied AI storage platforms break privacy &amp; compliance SLAs when customer prompts, opt-out toggles, and foundation-model training shards are decoupled.
+          </p>
+        </div>
+        <span class="tag tag-accent">AWS Applied AI Core Storage Challenge</span>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <span class="step-badge">FAILURE MODE 01</span>
+          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.45rem;">Silent Opt-Out Drift into SFT Shards</h3>
+          <p style="font-size:0.87rem; color:var(--ink-muted);">
+            Enterprise customers toggle AI training consent asynchronously, while nightly batch pipelines copy raw event logs into vector stores and SFT/LoRA manifests—leaking opted-out tenant prompts into model weights.
+          </p>
+        </div>
+        <div class="card">
+          <span class="step-badge">FAILURE MODE 02</span>
+          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.45rem;">Raw PII &amp; Over-Privileged Data Reads</h3>
+          <p style="font-size:0.87rem; color:var(--ink-muted);">
+            Without pre-ingestion VPC PII tokenization and purpose-bound role gates, analytics engineers and ML training jobs read unredacted <code>SSN</code>, <code>EMAIL</code>, <code>CARD</code>, and <code>AKIA</code> credentials stored under a single shared bucket key.
+          </p>
+        </div>
+        <div class="card">
+          <span class="step-badge">FAILURE MODE 03</span>
+          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.45rem;">Unverifiable GDPR Art. 17 / CCPA Deletion</h3>
+          <p style="font-size:0.87rem; color:var(--ink-muted);">
+            Deleting rows in a primary table leaves orphaned copies across append-only partitions, feature stores, and historical training snapshots—failing regulatory erasure audits with no cryptographic proof of destruction.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02. EXCALIDRAW ARCHITECTURE & 30-SECOND WALKTHROUGH -->
+  <section id="architecture" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">02 · Excalidraw Architecture &amp; How It Works (30s Walkthrough)</h2>
+          <p class="section-desc">
+            100% serverless AWS topology (<code>CloudFront</code> → private <code>S3 OAC</code> + Python 3.12 <code>Lambda</code> + <code>SQLite WAL</code> + <code>Amazon Bedrock Nova</code>) with every stage metric measured in <code>benchmarks/latest_results.json</code>.
+          </p>
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="resetDemoState()">↺ Reset Live Engine State</button>
+      </div>
+
+      <div class="card" style="padding:0.9rem; background:#FAF7F2;">
+        <img src="architecture.svg" alt="VaultLineage Excalidraw Architecture Diagram" style="width:100%; height:auto; display:block;" />
+      </div>
+
+      <div class="walkthrough-grid">
+        <div class="card walkthrough-card">
+          <span class="step-badge">STEP 01 / ENVELOPE &amp; PII</span>
+          <h3>Per-Tenant KMS DEK + PII Vault</h3>
+          <p>
+            Tokenizes 6 PII classes via tenant-salted <code>HMAC-SHA256</code> and seals raw + sanitized payloads in separate AEAD envelopes bound to <code>tenant|event|cmk_arn</code> at <strong>5,182.4 ev/s</strong>.
+          </p>
+        </div>
+        <div class="card walkthrough-card">
+          <span class="step-badge">STEP 02 / CONSENT GATE</span>
+          <h3>Real-Time ML Opt-Out Controls</h3>
+          <p>
+            Tenants flip between <code>ALLOW_ML_TRAINING</code>, <code>ANALYTICS_ONLY_OPTOUT_ML</code>, and <code>STRICT_ZERO_RETENTION</code>, triggering immediate SQLite <code>feature_shard_lineage</code> eviction.
+          </p>
+        </div>
+        <div class="card walkthrough-card">
+          <span class="step-badge">STEP 03 / SNAPSHOT ACL</span>
+          <h3>Purpose-Bound Dataset Builder</h3>
+          <p>
+            Enforces caller role × dataset purpose in <strong>0.028 ms p50</strong>, building sealed ML snapshots in <strong>15.09 ms</strong> with <strong>0.0%</strong> opted-out leakage across 1,200 events.
+          </p>
+        </div>
+        <div class="card walkthrough-card">
+          <span class="step-badge">STEP 04 / CRYPTO-SHRED</span>
+          <h3>RTBF Cascade &amp; Bedrock Audit</h3>
+          <p>
+            Zeroizes tenant 256-bit KMS DEKs and purges downstream SQLite shards in <strong>2.805 ms</strong> mean, then calls live <strong>Bedrock Nova</strong> (<code>2,923 ms</code> p50) for compliance attestation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03. WHAT I IMPLEMENTED -->
+  <section id="what-i-implemented" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">03 · What I Implemented (`vault_lineage/`)</h2>
+          <p class="section-desc">
+            Zero-dependency Python 3.12 core engine (`vault_lineage/storage_engine.py`, `server.py`, `benchmarks.py`) verified by 10/10 `unittest` suites and live AWS CloudFront deployment.
+          </p>
+        </div>
+        <span class="tag tag-pass">10 / 10 Unit Tests Passing (0.14s)</span>
+      </div>
+
+      <div class="grid-equal">
+        <div class="card">
+          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.5rem;">1. `KmsEnvelopeKeyring` + Dual-Envelope SQLite Partitions</h3>
+          <p style="font-size:0.86rem; color:var(--ink-muted); margin-bottom:0.75rem;">
+            Generates per-tenant 256-bit CMK wrapping secrets and 256-bit DEKs, encrypting every event into two distinct AEAD envelopes (`raw_envelope_json` for security auditors, `sanitized_envelope_json` for ML/analytics) inside indexed SQLite WAL tables (`idx_events_tenant_status`) with cross-tenant AAD tamper detection.
+          </p>
+          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.5rem;">2. Deterministic VPC PII Tokenizer &amp; Hash-Chained Ledger</h3>
+          <p style="font-size:0.86rem; color:var(--ink-muted);">
+            Scans `SSN`, `AWS_ACCESS_KEY`, `CREDIT_CARD`, `EMAIL`, `PHONE`, and `IP_ADDRESS` before encryption, replacing matches with tenant-isolated HMAC tokens (`&lt;PII:SSN:4d91be07&gt;`) and recording every mutation in SQLite `audit_ledger` (`prev_hash → entry_hash`).
+          </p>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.5rem;">3. Real-Time Opt-Out Gate &amp; Purpose-Bound Snapshot Builder</h3>
+          <p style="font-size:0.86rem; color:var(--ink-muted); margin-bottom:0.75rem;">
+            `build_training_snapshot()` validates `ROLE_CATALOG × PURPOSE_POLICIES` (`403` on role mismatch) and executes a live SQLite `JOIN` over `encrypted_events` and `tenants`, admitting only `ALLOW_ML_TRAINING` active partitions for SFT/LoRA while quarantining `ANALYTICS_ONLY_OPTOUT_ML` and `STRICT_ZERO_RETENTION`.
+          </p>
+          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.5rem;">4. Irreversible RTBF Crypto-Shredding + Live Bedrock Auditor</h3>
+          <p style="font-size:0.86rem; color:var(--ink-muted);">
+            `delete_tenant_rtbf()` zeroizes in-memory CMK/DEK bytearrays (`0x00`), tombstones SQLite partitions, purges `feature_shard_lineage` and historical ML snapshots (`manifest_sha256` re-sealed), signs an `HMAC-SHA256` Deletion Certificate, and invokes `us.amazon.nova-lite-v1:0` via `boto3` `converse()`.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04. 4-TAB INTERACTIVE LIVE STUDIO -->
+  <main id="studio-tabs" class="container tabs-wrapper">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">04 · Interactive 4-Tab Live Studio (Connected to CloudFront `/api/*`)</h2>
+        <p class="section-desc">
+          Every button below executes real HTTP requests against the Python 3.12 Lambda + SQLite + Amazon Bedrock Nova backend.
+        </p>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="resetDemoState()">↺ Reset All 5 Tenants</button>
+    </div>
+
+    <div class="tab-bar" role="tablist" aria-label="VaultLineage Interactive Live Studio">
+      <button type="button" class="tab-btn active" role="tab" aria-selected="true" data-tab="ingest-consent" onclick="switchTab('ingest-consent')">
+        <span class="tab-btn-eyebrow">Studio 01 · KMS &amp; Consent Plane</span>
+        <span class="tab-btn-title">1. Envelope Ingestion &amp; Opt-Out</span>
+        <span class="tab-btn-metric">5,182.4 ev/s · Live Consent Toggles</span>
+      </button>
+      <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="ml-snapshot" onclick="switchTab('ml-snapshot')">
+        <span class="tab-btn-eyebrow">Studio 02 · Compliant ML Builder</span>
+        <span class="tab-btn-title">2. ML Training Snapshot Gate</span>
+        <span class="tab-btn-metric">0.0% Opt-Out Leakage · 15.09 ms Build</span>
+      </button>
+      <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="rtbf-delete" onclick="switchTab('rtbf-delete')">
+        <span class="tab-btn-eyebrow">Studio 03 · GDPR/CCPA + Bedrock</span>
+        <span class="tab-btn-title">3. Crypto-Shred &amp; Lineage Purge</span>
+        <span class="tab-btn-metric">2.805 ms Purge · Live Nova Audit</span>
+      </button>
+      <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="benchmarks" onclick="switchTab('benchmarks')">
+        <span class="tab-btn-eyebrow">Studio 04 · Verified Telemetry</span>
+        <span class="tab-btn-title">4. Measured Benchmark Suite</span>
+        <span class="tab-btn-metric">1,200 SQLite Events · 3 Live Audits</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: ENVELOPE-ENCRYPTED INGESTION & PER-TENANT CONSENT PLANE -->
+    <section id="panel-ingest-consent" class="tab-panel active" role="tabpanel">
+      <div class="sim-header">
+        <div>
+          <h3 class="sim-title">Envelope-Encrypted Event Ingestion &amp; Per-Tenant Consent Control Plane</h3>
+          <p class="sim-desc">
+            Inspect per-tenant KMS DEK states, toggle live customer ML opt-out policies (<code>/api/consent/update</code>), ingest customer events with VPC PII tokenization (<code>/api/events/ingest</code>), and compare raw ciphertext envelopes against role-authorized views.
+          </p>
+        </div>
+        <span class="tag tag-accent" id="auditChainHeaderBadge">SHA-256 Audit Chain: VERIFIED</span>
+      </div>
+
+      <div id="tab1ActionBanner" class="verdict-banner verdict-allow" style="display:none;"></div>
+
+      <div class="grid-2">
+        <div>
+          <div class="card" style="margin-bottom:1.2rem;">
+            <div class="control-label">
+              <span>Per-Tenant KMS Keyring &amp; Real-Time Consent Policies</span>
+              <span class="mono" style="font-size:0.69rem; color:var(--ink-muted);">POST /api/consent/update</span>
+            </div>
+            <p style="font-size:0.81rem; color:var(--ink-muted); margin-bottom:0.8rem;">
+              Click any policy pill below to flip a tenant's live consent state in SQLite and immediately evict or re-index streaming ML shards.
+            </p>
+            <div id="tenantRegistryList"></div>
+          </div>
+
+          <div class="card">
+            <div class="control-label">
+              <span>Seal &amp; Ingest Live Customer Content Event</span>
+              <span class="mono" style="font-size:0.69rem; color:var(--ink-muted);">POST /api/events/ingest</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.65rem; margin-bottom:0.75rem;">
+              <div>
+                <label class="mono" for="ingestTenantSelect" style="font-size:0.68rem; font-weight:700; display:block; margin-bottom:0.25rem;">TENANT PARTITION</label>
+                <select id="ingestTenantSelect"></select>
+              </div>
+              <div>
+                <label class="mono" for="ingestTypeSelect" style="font-size:0.68rem; font-weight:700; display:block; margin-bottom:0.25rem;">EVENT STREAM TYPE</label>
+                <select id="ingestTypeSelect">
+                  <option value="rag_support_prompt">rag_support_prompt</option>
+                  <option value="code_copilot_trace">code_copilot_trace</option>
+                  <option value="clinical_note_summary">clinical_note_summary</option>
+                  <option value="agent_tool_completion">agent_tool_completion</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="control-label">
+              <span>1-Click Realistic PII Payload Presets</span>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.75rem;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="loadIngestPreset(0)">🇪🇺 EU Refund + Card + Email</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="loadIngestPreset(1)">🔑 Leaked AKIA Key + IP</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="loadIngestPreset(2)">🏥 Clinical SSN + Phone</button>
+            </div>
+
+            <label class="mono" for="ingestPayloadInput" style="font-size:0.68rem; font-weight:700; display:block; margin-bottom:0.25rem;">RAW CUSTOMER CONTENT PAYLOAD (PRE-ENVELOPE)</label>
+            <textarea id="ingestPayloadInput" rows="3">Investigate wire settlement mismatch for CFO hannah.lindqvist@nordicretail.de (card 4532-7700-1188-9012, phone +49 30 44129810) on Frankfurt cluster.</textarea>
+
+            <div style="margin-top:0.8rem; display:flex; justify-content:space-between; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+              <span class="mono" style="font-size:0.69rem; color:var(--ink-muted);">Auto-tokenizes PII &amp; wraps 256-bit DEK</span>
+              <button type="button" class="btn btn-accent" id="ingestSubmitBtn" onclick="submitIngestEvent()">
+                🔐 Seal &amp; Append Encrypted Event
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card" style="margin-bottom:1.2rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:0.85rem;">
+              <div>
+                <div style="font-weight:800; font-size:1.05rem;">SQLite Encrypted Event Partitions &amp; Role-Scoped Access</div>
+                <div class="mono" style="font-size:0.7rem; color:var(--ink-muted);">Click any event row to inspect on-disk AEAD ciphertext vs decrypted view</div>
+              </div>
+              <div style="min-width:245px;">
+                <label class="mono" for="viewerRoleSelect" style="font-size:0.66rem; font-weight:700; display:block; margin-bottom:0.2rem;">VIEWING DATA INTERFACE AS ROLE:</label>
+                <select id="viewerRoleSelect" onchange="changeViewerRole(this.value)">
+                  <option value="security_auditor">security_auditor (Raw + Tokenized)</option>
+                  <option value="ml_scientist">ml_scientist (PII-Tokenized Only)</option>
+                  <option value="analytics_engineer">analytics_engineer (PII-Tokenized Only)</option>
+                  <option value="external_contractor">external_contractor (Zero-Trust Locked)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-wrap" style="max-height:265px; overflow-y:auto; margin-bottom:1rem;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Event ID</th>
+                    <th>Tenant</th>
+                    <th>Consent State</th>
+                    <th>KMS DEK Status</th>
+                    <th>PII Quarantined</th>
+                  </tr>
+                </thead>
+                <tbody id="eventsPartitionTableBody"></tbody>
+              </table>
+            </div>
+
+            <div class="code-header">
+              <span id="selectedEventHeaderLeft">Envelope Ciphertext vs Authorized View Inspector</span>
+              <span id="selectedEventHeaderRight" class="tag tag-accent-soft">KMS-AEAD-256</span>
+            </div>
+            <pre class="code-box" style="max-height:245px;" id="selectedEventInspectorBox"></pre>
+          </div>
+
+          <div class="card">
+            <div class="control-label">
+              <span>Immutable SHA-256 Hash-Chained Audit Ledger</span>
+              <span class="mono" style="font-size:0.69rem; color:var(--pass);" id="auditHeadHashLabel"></span>
+            </div>
+            <div class="table-wrap" style="max-height:195px; overflow-y:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Action</th>
+                    <th>Tenant</th>
+                    <th>Status</th>
+                    <th>Chain Hash (prev → curr)</th>
+                  </tr>
+                </thead>
+                <tbody id="auditLogTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: COMPLIANT ML TRAINING DATASET SNAPSHOT BUILDER -->
+    <section id="panel-ml-snapshot" class="tab-panel" role="tabpanel">
+      <div class="sim-header">
+        <div>
+          <h3 class="sim-title">Compliant ML Training Dataset Snapshot Builder (<code>/api/training/build-snapshot</code>)</h3>
+          <p class="sim-desc">
+            Enforces purpose-bound role authorization and SQLite tenant opt-out lineage filtering before emitting sealed ML training manifests. Provably blocks <code>ANALYTICS_ONLY_OPTOUT_ML</code>, <code>STRICT_ZERO_RETENTION</code>, and <code>CRYPTO_SHREDDED</code> records while stripping raw PII.
+          </p>
+        </div>
+        <span class="tag tag-accent">0.0% Opt-Out Leakage Guaranteed</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="control-label">
+            <span>1-Click Role × Purpose Gate Scenarios</span>
+            <span class="mono" style="font-size:0.69rem; color:var(--ink-muted);">Click to run live</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-bottom:1rem;">
+            <button type="button" class="btn btn-accent btn-sm" onclick="runSnapshotScenario('ml_scientist', 'ml_foundation_training')">
+              ✅ ML Scientist → Foundation SFT
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="runSnapshotScenario('ml_scientist', 'rag_fine_tuning')">
+              ✅ ML Scientist → Domain LoRA
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="runSnapshotScenario('analytics_engineer', 'product_analytics_rollup')">
+              📊 Analytics Eng → Telemetry Rollup
+            </button>
+            <button type="button" class="btn btn-danger-soft btn-sm" onclick="runSnapshotScenario('analytics_engineer', 'ml_foundation_training')">
+              🛑 Analytics Eng → ML Build (403 Block)
+            </button>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.7rem; margin-bottom:0.85rem;">
+            <div>
+              <label class="mono" for="snapRoleSelect" style="font-size:0.68rem; font-weight:700; display:block; margin-bottom:0.25rem;">REQUESTING PRINCIPAL ROLE</label>
+              <select id="snapRoleSelect" onchange="renderTenantEligibilityPreview()">
+                <option value="ml_scientist">ml_scientist (Applied AI Scientist)</option>
+                <option value="analytics_engineer">analytics_engineer (BI &amp; Telemetry)</option>
+                <option value="security_auditor">security_auditor (Compliance Auditor)</option>
+                <option value="external_contractor">external_contractor (Unscoped Vendor)</option>
+              </select>
+            </div>
+            <div>
+              <label class="mono" for="snapPurposeSelect" style="font-size:0.68rem; font-weight:700; display:block; margin-bottom:0.25rem;">DATASET SNAPSHOT PURPOSE</label>
+              <select id="snapPurposeSelect" onchange="renderTenantEligibilityPreview()">
+                <option value="ml_foundation_training">ml_foundation_training (Pretrain / SFT)</option>
+                <option value="rag_fine_tuning">rag_fine_tuning (Domain RAG / LoRA)</option>
+                <option value="product_analytics_rollup">product_analytics_rollup (BI Aggregates)</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-obsidian" style="width:100%; justify-content:center; margin-bottom:1.1rem;" onclick="buildTrainingSnapshotLive()">
+            ⚙️ Execute Compliant Snapshot Build (POST /api/training/build-snapshot)
+          </button>
+
+          <div class="control-label">
+            <span>Live Tenant Consent vs Purpose Gate Matrix</span>
+            <span class="mono" style="font-size:0.68rem; color:var(--ink-muted);">Real-time pre-flight check</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tenant</th>
+                  <th>Active Policy</th>
+                  <th>Events</th>
+                  <th>Gate Decision</th>
+                </tr>
+              </thead>
+              <tbody id="snapEligibilityTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div id="snapVerdictBanner" class="verdict-banner verdict-allow"></div>
+
+          <div class="grid-equal" style="gap:0.85rem; margin-bottom:1rem;">
+            <div>
+              <div class="code-header" style="background:var(--pass-soft); color:var(--pass);">
+                <span>✅ ADMITTED INTO MANIFEST</span>
+                <span id="snapAdmittedCountBadge">0 events</span>
+              </div>
+              <div class="table-wrap" style="max-height:235px; overflow-y:auto;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Event</th>
+                      <th>Tenant</th>
+                      <th>PII-Scrubbed Training Text</th>
+                    </tr>
+                  </thead>
+                  <tbody id="snapAdmittedTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <div class="code-header" style="background:var(--fail-soft); color:var(--fail);">
+                <span>🛑 BLOCKED BY LINEAGE GATE</span>
+                <span id="snapBlockedCountBadge">0 events</span>
+              </div>
+              <div class="table-wrap" style="max-height:235px; overflow-y:auto;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Event</th>
+                      <th>Tenant</th>
+                      <th>Gate Block Reason</th>
+                    </tr>
+                  </thead>
+                  <tbody id="snapBlockedTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-label">
+            <span>Sealed Dataset Snapshots &amp; Downstream Lineage Registry</span>
+            <span class="mono" style="font-size:0.69rem; color:var(--ink-muted);">Tracked for RTBF cascade</span>
+          </div>
+          <div class="table-wrap" style="max-height:175px; overflow-y:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Snapshot ID</th>
+                  <th>Purpose</th>
+                  <th>Role</th>
+                  <th>Admitted / Blocked</th>
+                  <th>Lineage Status</th>
+                  <th>Manifest SHA-256</th>
+                </tr>
+              </thead>
+              <tbody id="snapshotsHistoryTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: GDPR/CCPA RIGHT-TO-DELETE CRYPTO-SHREDDING & LINEAGE PURGE -->
+    <section id="panel-rtbf-delete" class="tab-panel" role="tabpanel">
+      <div class="sim-header">
+        <div>
+          <h3 class="sim-title">GDPR / CCPA Right-to-Delete (<code>RTBF</code>) Crypto-Shredding &amp; Downstream Lineage Cascade</h3>
+          <p class="sim-desc">
+            Executes <code>POST /api/compliance/delete-tenant</code>: zeroizes the tenant's KMS 256-bit DEK, tombstones SQLite partitions, purges every downstream Feature Store, LoRA adapter &amp; historical ML Training Snapshot referencing that tenant, signs an <code>HMAC-SHA256</code> Deletion Certificate, and invokes live <strong>Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)</strong>.
+          </p>
+        </div>
+        <span class="tag tag-fail">Irreversible DEK Destruction + 100% Lineage Purge</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div style="display:grid; grid-template-columns:1.25fr 1fr; gap:0.7rem; margin-bottom:0.85rem;">
+            <div>
+              <label class="mono" for="rtbfTenantSelect" style="font-size:0.68rem; font-weight:700; display:block; margin-bottom:0.25rem;">TARGET TENANT FOR ERASURE</label>
+              <select id="rtbfTenantSelect" onchange="renderRtbfLineageSvg()"></select>
+            </div>
+            <div>
+              <label class="mono" for="rtbfRegSelect" style="font-size:0.68rem; font-weight:700; display:block; margin-bottom:0.25rem;">REGULATORY MANDATE</label>
+              <select id="rtbfRegSelect">
+                <option value="GDPR-Art17">GDPR-Art17 (EU Right to Erasure)</option>
+                <option value="CCPA">CCPA §1798.105 (CA Deletion)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:1.05rem;">
+            <button type="button" class="btn btn-danger" id="rtbfExecuteBtn" style="flex:1; justify-content:center;" onclick="executeRtbfDeleteLive()">
+              🔥 Execute Crypto-Shred &amp; Lineage Purge (/api/compliance/delete-tenant)
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="resetDemoState()">↺ Reset</button>
+          </div>
+
+          <div class="control-label">
+            <span>Live 4-Stage KMS &amp; Downstream ML Lineage Cascade DAG</span>
+            <span class="mono" id="rtbfDagStateLabel" style="font-size:0.69rem;"></span>
+          </div>
+          <div style="border:2px solid var(--border); background:#FAF7F2; padding:0.55rem;" id="rtbfSvgDagContainer"></div>
+
+          <div style="margin-top:0.95rem;">
+            <div class="control-label">
+              <span>Downstream Streaming Feature &amp; Adapter Shards</span>
+              <span class="mono" style="font-size:0.68rem; color:var(--ink-muted);">0 residual deleted records</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Shard ID</th>
+                    <th>Type</th>
+                    <th>Indexed Events</th>
+                    <th>Active Tenants</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="featureShardsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card" style="margin-bottom:1.2rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:0.6rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+              <div>
+                <div style="font-weight:800; font-size:1.06rem;">Amazon Bedrock Nova Compliance Auditor Memo</div>
+                <div class="mono" style="font-size:0.7rem; color:var(--ink-muted);">Model: <code>us.amazon.nova-lite-v1:0</code> · Live GDPR/CCPA Legal &amp; Crypto Attestation</div>
+              </div>
+              <span class="tag tag-blue" id="bedrockAuditModeBadge">Awaiting RTBF Execution</span>
+            </div>
+            <div class="memo-box" id="bedrockComplianceMemoBox">Select a tenant (e.g., tenant-euro-nordic) on the left and click "Execute Crypto-Shred &amp; Lineage Purge" to destroy its KMS 256-bit DEK, purge all downstream ML snapshots &amp; feature shards, and invoke live Amazon Bedrock (us.amazon.nova-lite-v1:0) to generate a signed compliance audit report.</div>
+          </div>
+
+          <div class="card">
+            <div class="code-header">
+              <span>Signed SHA-256 Compliance Deletion Certificate</span>
+              <span id="certSignatureStatusBadge" class="tag tag-pass">HMAC-SHA256 ATTESTED</span>
+            </div>
+            <pre class="code-box" style="max-height:295px;" id="deletionCertificateJsonBox">// No deletion certificates issued in current session yet.
+// Trigger POST /api/compliance/delete-tenant to mint a tamper-evident SHA-256 Deletion Certificate.</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: MEASURED STORAGE, OPT-OUT & DELETION SLA BENCHMARK SUITE -->
+    <section id="panel-benchmarks" class="tab-panel" role="tabpanel">
+      <div class="sim-header">
+        <div>
+          <h3 class="sim-title">Measured Storage Throughput, Opt-Out Isolation &amp; Deletion SLA Benchmark Suite</h3>
+          <p class="sim-desc">
+            100% measured telemetry from <code>benchmarks/latest_results.json</code> across <strong><code>1,200</code> SQLite WAL envelope-encrypted events</strong>, <strong><code>20</code> tenants</strong>, <strong><code>300</code> role × purpose probes</strong>, and <strong><code>3</code> live Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>) compliance audits</strong>.
+          </p>
+        </div>
+        <button type="button" class="btn btn-accent" id="liveBenchBtn" onclick="runLiveServerBenchmark()">
+          ⚡ Run Live Lambda + Bedrock Benchmark (/api/benchmarks/run)
+        </button>
+      </div>
+
+      <div class="grid-equal">
+        <div class="card">
+          <div class="control-label">
+            <span>Core Privacy, Security &amp; Compliance Invariants</span>
+            <span class="tag tag-pass" id="benchEventsBadge">1,200 SQLite Events Verified</span>
+          </div>
+
+          <div class="bar-group">
+            <div class="bar-row">
+              <div class="bar-meta">
+                <span>Compliant ML Opt-Out Gate Isolation (0 / 1,200 leaked)</span>
+                <span style="color:var(--pass);">100.0% Isolated (0.0% Leakage)</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill bar-fill-accent" style="width:100%;"></div></div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-meta">
+                <span>Downstream SQLite Shard &amp; ML Snapshot Purge on RTBF</span>
+                <span style="color:var(--pass);">100.0% Purged (0 Residual)</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill bar-fill-pass" style="width:100%;"></div></div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-meta">
+                <span>KMS DEK Crypto-Shredding Ciphertext Undecipherability</span>
+                <span style="color:var(--pass);" id="benchShredBarLabel">100.0% Undecipherable (180/180)</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:100%;"></div></div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-meta">
+                <span>VPC PII Vault Pre-Training Quarantine (1,800 spans tokenized)</span>
+                <span style="color:var(--pass);">100.0% Tokenized (0 Raw PII Leaks)</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill bar-fill-accent" style="width:100%;"></div></div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-meta">
+                <span>Purpose-Bound Unauthorized Principal Rejection Rate</span>
+                <span style="color:var(--pass);" id="benchAuthBlockBarLabel">100.0% Blocked (170/170)</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill bar-fill-pass" style="width:100%;"></div></div>
+            </div>
+          </div>
+
+          <div class="code-header" style="margin-top:1rem;">
+            <span>Exact Output of <code>benchmarks/latest_results.json</code></span>
+            <span id="benchSourceLabel">Measured SQLite + Live Bedrock Run</span>
+          </div>
+          <pre class="code-box" style="max-height:255px;" id="benchRawJsonBox"></pre>
+        </div>
+
+        <div class="card">
+          <div class="control-label">
+            <span>Measured Latency, Throughput &amp; Compliance Telemetry</span>
+            <span class="mono" style="font-size:0.69rem; color:var(--ink-muted);">time.perf_counter() verified</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Measured Operation</th>
+                  <th>Exact Measured Value</th>
+                  <th>Sample Size / Proof</th>
+                  <th>Verdict</th>
+                </tr>
+              </thead>
+              <tbody id="benchSlaTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 05. WHY IT WINS -->
+  <section id="why-it-wins" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">05 · Why It Wins (Architectural Trade-Offs)</h2>
+          <p class="section-desc">
+            Comparing VaultLineage's per-tenant KMS crypto-shredding &amp; SQLite lineage DAG against conventional AI data-lake architectures.
+          </p>
+        </div>
+        <span class="tag tag-accent">Zero-Serverless Footprint (No EC2 / RDS / GPU)</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Architecture Pattern</th>
+              <th>Tenant Encryption Isolation</th>
+              <th>Real-Time ML Opt-Out Enforcement</th>
+              <th>GDPR / CCPA Deletion Across ML Shards</th>
+              <th>Audit &amp; Compliance Proof</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Naive Append-Only Object Lake + Ad-Hoc Row Deletes</strong></td>
+              <td>Single shared bucket KMS key; cross-tenant read blast radius</td>
+              <td>Delayed batch sync; high risk of opted-out leakage into SFT shards</td>
+              <td>Requires rewriting multi-TB Parquet archives; misses downstream LoRA copies</td>
+              <td>Unstructured application logs; no cryptographic proof</td>
+            </tr>
+            <tr>
+              <td><strong>2. Coarse DB Table ACLs Without PII Token Vault</strong></td>
+              <td>Table-level encryption only; raw PII exposed to ML scientists</td>
+              <td>Manual SQL <code>WHERE</code> filters prone to scientist query bugs</td>
+              <td>Deletes primary rows while feature-store embeddings retain memorized PII</td>
+              <td>No Merkle or HMAC deletion certificate</td>
+            </tr>
+            <tr class="winner-row">
+              <td><strong>3. VaultLineage (Per-Tenant KMS DEKs + SQLite Lineage Gate + Bedrock Auditor)</strong></td>
+              <td><strong>Dedicated 256-bit DEK per tenant</strong> + cross-tenant AAD + dual raw/PII-tokenized envelopes</td>
+              <td><strong>0.0% leakage (0/1,200)</strong>; instant SQLite shard eviction + role × purpose <code>403</code> gate (<code>0.028 ms</code> p50)</td>
+              <td><strong>Irreversible DEK zeroization + 100% SQLite shard &amp; snapshot re-compaction in <code>2.805 ms</code></strong></td>
+              <td><strong>1,374/1,374 SHA-256 hash-chained entries + HMAC Deletion Cert + Live Bedrock Nova Memo</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="footer">
+        <div>
+          <strong>VaultLineage v1.0</strong> · Serverless AWS CloudFront + Private S3 (OAC) + Python 3.12 SQLite Lambda + Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)
+        </div>
+        <div class="mono" style="font-size:0.74rem;">
+          <a href="https://d3bfhuibgzllcf.cloudfront.net" target="_blank" rel="noopener" style="color:var(--ink);">AgentGuard</a> ·
+          <a href="https://d2gltlwyzbnbxr.cloudfront.net" target="_blank" rel="noopener" style="color:var(--ink);">QuickSpaces</a> ·
+          <a href="https://github.com/ritwikareddykancharla/vault-lineage-storage" target="_blank" rel="noopener" style="color:var(--ink);">GitHub</a>
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <script>
+    // =========================================================================
+    // ZERO-LOCALSTORAGE URL HASH THEME & TAB ROUTING
+    // =========================================================================
+    const VALID_TABS = ['ingest-consent', 'ml-snapshot', 'rtbf-delete', 'benchmarks'];
+    let activeTab = 'ingest-consent';
+    let activeTheme = 'light';
+    let currentViewerRole = 'security_auditor';
+    let selectedEventId = null;
+    let appState = null;
+    let latestSnapshotResult = null;
+    let latestRtbfResult = null;
+
+    // Exact JSON output from benchmarks/latest_results.json (zero invented numbers)
+    const VERIFIED_BENCHMARKS = {
+      benchmark_suite: "VaultLineage v1.0 SQLite + KMS Envelope + Bedrock Nova Suite",
+      storage_engine: "SQLite WAL + KMS-AEAD-256 (SHA256-CTR + HMAC-SHA256)",
+      events_benchmarked: 1200,
+      tenants_benchmarked: 20,
+      pii_spans_tokenized_total: 1800,
+      ingest_throughput_events_per_sec: 5182.4,
+      mean_envelope_ingest_ms: 0.192,
+      p50_envelope_ingest_ms: 0.164,
+      p95_envelope_ingest_ms: 0.27,
+      ml_snapshot_build_ms: 15.09,
+      ml_snapshot_admitted_events: 600,
+      ml_snapshot_blocked_optout_events: 600,
+      pii_spans_quarantined_in_snapshot: 960,
+      opt_out_leakage_count: 0,
+      opt_out_leakage_rate_pct: 0.0,
+      raw_pii_leakage_count: 0,
+      purpose_auth_probes: 300,
+      purpose_auth_p50_ms: 0.028,
+      purpose_auth_p95_ms: 0.039,
+      purpose_auth_mean_ms: 0.03,
+      unauthorized_probes_count: 170,
+      unauthorized_blocks_count: 170,
+      unauthorized_access_block_rate_pct: 100.0,
+      rtbf_tenants_shredded: 3,
+      shredded_ciphertexts_tested: 180,
+      shredded_ciphertexts_blocked: 180,
+      crypto_shred_sql_purge_mean_ms: 2.805,
+      crypto_shred_undecipherable_pct: 100.0,
+      downstream_lineage_purge_pct: 100.0,
+      residual_deleted_records: 0,
+      bedrock_model: "us.amazon.nova-lite-v1:0",
+      bedrock_invocation_mode: "live-aws-bedrock-cli",
+      bedrock_audit_calls: 3,
+      bedrock_audit_p50_ms: 2923.03,
+      bedrock_audit_mean_ms: 2992.01,
+      bedrock_total_tokens: 2643,
+      sample_bedrock_memo: "- We attest that tenant-bench-00 (Benchmark Enterprise 00) has executed Right-to-Delete (RTBF) in compliance with GDPR-Art17, destroying KMS DEK ID dek-bench-00-9e9c9e0a19.\n- A total of 60 encrypted events were cryptographically shredded, ensuring no residual data remains.\n- Downstream ML/feature shards were purged, including snapshot snap-ml-001 with a new manifest SHA-256 digest 94b4222264da720a7e96a1c918208f5efe088976cafd06cade3bdabe2c8d037d.\n- The cryptographic operation was certified with SHA-256 digest 943d43b4ad2bf7664d1fd4bb...",
+      audit_chain_verified: true,
+      audit_entries_verified: 1374
+    };
+
+    const INGEST_PRESETS = [
+      {
+        tenant: 'tenant-euro-nordic',
+        type: 'rag_support_prompt',
+        text: 'Investigate wire settlement mismatch for CFO hannah.lindqvist@nordicretail.de (card 4532-7700-1188-9012, phone +49 30 44129810) on Frankfurt cluster.'
+      },
+      {
+        tenant: 'tenant-finserve-alpha',
+        type: 'code_copilot_trace',
+        text: 'Quarantine exposed staging key AKIAIOSFODNN7EXAMPLE from deployment host 203.0.113.88 reported by secops@alphabank.io.'
+      },
+      {
+        tenant: 'tenant-health-meridian',
+        type: 'clinical_note_summary',
+        text: 'Oncology trial intake for patient SSN 412-88-9014 (contact coordinator@meridianhealth.org, 415-891-2209) — clinical opt-out active.'
+      }
+    ];
+
+    function parseHashState() {
+      const raw = (window.location.hash || '').replace(/^#/, '');
+      if (!raw) return;
+      const parts = raw.split('&');
+      for (const p of parts) {
+        if (VALID_TABS.includes(p)) {
+          activeTab = p;
+        } else if (p === 'theme=dark') {
+          activeTheme = 'dark';
+        } else if (p === 'theme=light') {
+          activeTheme = 'light';
+        }
+      }
+    }
+
+    function syncHashState() {
+      const hash = activeTheme === 'dark' ? `${activeTab}&theme=dark` : activeTab;
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', '#' + hash);
+      } else {
+        window.location.hash = hash;
+      }
+    }
+
+    function applyTheme(theme) {
+      activeTheme = theme;
+      document.documentElement.setAttribute('data-theme', theme);
+      document.getElementById('themeIcon').textContent = theme === 'dark' ? '☀️' : '🌙';
+      document.getElementById('themeLabel').textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+      syncHashState();
+    }
+
+    document.getElementById('themeToggleBtn').addEventListener('click', () => {
+      applyTheme(activeTheme === 'dark' ? 'light' : 'dark');
+    });
+
+    window.switchTab = function(tabId) {
+      if (!VALID_TABS.includes(tabId)) return;
+      activeTab = tabId;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const isMatch = btn.getAttribute('data-tab') === tabId;
+        btn.classList.toggle('active', isMatch);
+        btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+      });
+      document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.id === 'panel-' + tabId);
+      });
+      syncHashState();
+    };
+
+    function escapeHtml(str) {
+      return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function showTab1Banner(kind, title, detail) {
+      const el = document.getElementById('tab1ActionBanner');
+      el.style.display = 'flex';
+      el.className = 'verdict-banner ' + (kind === 'deny' ? 'verdict-deny' : (kind === 'warn' ? 'verdict-warn' : 'verdict-allow'));
+      el.innerHTML = `
+        <div>
+          <div style="font-weight:800; font-size:0.95rem;">${escapeHtml(title)}</div>
+          <div style="font-size:0.81rem; margin-top:0.15rem;">${escapeHtml(detail)}</div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('tab1ActionBanner').style.display='none'">✕</button>
+      `;
+    }
+
+    // =========================================================================
+    // API COMMUNICATION WITH AWS CLOUDFRONT /api/* ORIGIN
+    // =========================================================================
+    async function probeHealth() {
+      try {
+        const res = await fetch('/api/health', { method: 'GET' });
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('runtimeModeText').textContent =
+            `Live AWS Python ${data.python_version || '3.12'} API · Bedrock (${data.bedrock_model || 'us.amazon.nova-lite-v1:0'}) · Audit Chain: ${data.audit_chain_valid ? 'OK' : 'WARN'}`;
+        }
+      } catch (_) {
+        document.getElementById('runtimeModeText').textContent =
+          'Standalone Studio Preview · SQLite KMS Envelope Engine';
+      }
+    }
+
+    async function refreshState() {
+      try {
+        const res = await fetch(`/api/state?viewer_role=${encodeURIComponent(currentViewerRole)}`);
+        if (!res.ok) throw new Error('State fetch failed');
+        appState = await res.json();
+        renderAllPanels();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    window.resetDemoState = async function() {
+      try {
+        await fetch('/api/reset', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+        latestSnapshotResult = null;
+        latestRtbfResult = null;
+        selectedEventId = null;
+        document.getElementById('bedrockAuditModeBadge').textContent = 'Awaiting RTBF Execution';
+        document.getElementById('bedrockComplianceMemoBox').textContent =
+          'Select a tenant (e.g., tenant-euro-nordic) on the left and click "Execute Crypto-Shred & Lineage Purge" to destroy its KMS 256-bit DEK, purge all downstream ML snapshots & feature shards, and invoke live Amazon Bedrock (us.amazon.nova-lite-v1:0) to generate a signed compliance audit report.';
+        document.getElementById('deletionCertificateJsonBox').textContent =
+          '// State reset complete. All 5 enterprise tenants have fresh ACTIVE 256-bit KMS DEKs in SQLite.';
+        await probeHealth();
+        await refreshState();
+        showTab1Banner('allow', '↺ Live Engine Reset Complete', 'All 5 enterprise tenants, KMS DEKs, SQLite partitions, and baseline ML snapshot restored.');
+      } catch (err) {
+        alert('Reset failed: ' + err.message);
+      }
+    };
+
+    // =========================================================================
+    // TAB 1 RENDERING & ACTIONS
+    // =========================================================================
+    function consentBadgeHtml(policy, lifecycleState) {
+      if (lifecycleState !== 'ACTIVE') {
+        return '<span class="tag tag-fail">CRYPTO_SHREDDED_DELETED</span>';
+      }
+      if (policy === 'ALLOW_ML_TRAINING') {
+        return '<span class="tag tag-pass">ALLOW_ML_TRAINING</span>';
+      }
+      if (policy === 'ANALYTICS_ONLY_OPTOUT_ML') {
+        return '<span class="tag tag-warn">ANALYTICS_ONLY_OPTOUT_ML</span>';
+      }
+      return '<span class="tag tag-purple">STRICT_ZERO_RETENTION</span>';
+    }
+
+    function renderTab1() {
+      if (!appState) return;
+      const tenants = appState.tenants || [];
+      const events = appState.events || [];
+
+      const chain = appState.audit_chain || {};
+      const auditBadge = document.getElementById('auditChainHeaderBadge');
+      auditBadge.textContent = chain.valid
+        ? `SHA-256 Audit Chain: VERIFIED (${chain.entries_checked} entries)`
+        : 'SHA-256 Audit Chain: TAMPER DETECTED';
+      auditBadge.className = chain.valid ? 'tag tag-accent' : 'tag tag-fail';
+      document.getElementById('auditHeadHashLabel').textContent = chain.head_hash
+        ? `HEAD: ${chain.head_hash.slice(0, 18)}...`
+        : '';
+
+      const regHtml = tenants.map(t => {
+        const isShredded = t.lifecycle_state !== 'ACTIVE';
+        const policies = ['ALLOW_ML_TRAINING', 'ANALYTICS_ONLY_OPTOUT_ML', 'STRICT_ZERO_RETENTION'];
+        const policyBtns = policies.map(pol => {
+          const isCurrent = t.consent_policy === pol && !isShredded;
+          const shortLabel = pol === 'ALLOW_ML_TRAINING'
+            ? '✅ Allow ML'
+            : (pol === 'ANALYTICS_ONLY_OPTOUT_ML' ? '🛡️ Opt-Out ML (Analytics)' : '🔒 Zero Retention');
+          return `<button type="button" class="btn btn-sm ${isCurrent ? 'btn-accent' : 'btn-secondary'}"
+            ${isShredded ? 'disabled style="opacity:0.45;cursor:not-allowed;"' : `onclick="updateTenantConsent('${t.tenant_id}', '${pol}')"`}>${shortLabel}</button>`;
+        }).join('');
+
+        return `
+          <div class="tenant-card ${isShredded ? 'shredded' : ''}">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.35rem;">
+              <div>
+                <strong>${escapeHtml(t.name)}</strong>
+                <span class="mono" style="font-size:0.69rem; color:var(--ink-muted);">(${escapeHtml(t.tenant_id)} · ${escapeHtml(t.region)})</span>
+              </div>
+              ${consentBadgeHtml(t.consent_policy, t.lifecycle_state)}
+            </div>
+            <div class="mono" style="font-size:0.68rem; color:var(--ink-muted); margin-bottom:0.5rem;">
+              KMS DEK: <code>${escapeHtml(t.kms_key.dek_id)}</code> [${escapeHtml(t.kms_key.key_state)}] · Wrapped: <code>${escapeHtml(t.kms_key.wrapped_dek_preview)}</code>
+            </div>
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">${policyBtns}</div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('tenantRegistryList').innerHTML = regHtml;
+
+      const ingSel = document.getElementById('ingestTenantSelect');
+      const prevIngVal = ingSel.value;
+      const activeTenants = tenants.filter(t => t.lifecycle_state === 'ACTIVE');
+      ingSel.innerHTML = activeTenants.map(t =>
+        `<option value="${escapeHtml(t.tenant_id)}">${escapeHtml(t.tenant_id)} (${escapeHtml(t.region)})</option>`
+      ).join('');
+      if (activeTenants.some(t => t.tenant_id === prevIngVal)) {
+        ingSel.value = prevIngVal;
+      }
+
+      if (!selectedEventId && events.length > 0) {
+        selectedEventId = events[0].event_id;
+      }
+      document.getElementById('eventsPartitionTableBody').innerHTML = events.map(ev => {
+        const isSel = ev.event_id === selectedEventId;
+        const dekTag = ev.storage_status === 'ENCRYPTED_ACTIVE'
+          ? `<span class="tag tag-pass">ACTIVE</span>`
+          : `<span class="tag tag-fail">SHREDDED</span>`;
+        const piiLabel = ev.pii_tokens_count > 0
+          ? `<span class="tag tag-warn">${ev.pii_tokens_count} (${escapeHtml(ev.pii_categories.join(','))})</span>`
+          : `<span class="mono" style="font-size:0.68rem; color:var(--ink-muted);">0 spans</span>`;
+        return `
+          <tr class="clickable-row ${isSel ? 'selected-row' : ''}" onclick="selectEventRow('${escapeHtml(ev.event_id)}')">
+            <td class="mono"><strong>${escapeHtml(ev.event_id)}</strong><br/><span style="font-size:0.65rem;color:var(--ink-muted);">${escapeHtml(ev.event_type)}</span></td>
+            <td class="mono" style="font-size:0.71rem;">${escapeHtml(ev.tenant_id)}</td>
+            <td>${consentBadgeHtml(ev.current_tenant_consent, ev.storage_status === 'ENCRYPTED_ACTIVE' ? 'ACTIVE' : 'DELETED')}</td>
+            <td>${dekTag}</td>
+            <td>${piiLabel}</td>
+          </tr>
+        `;
+      }).join('');
+
+      renderSelectedEventInspector();
+
+      const audits = (chain.recent_entries || []);
+      document.getElementById('auditLogTableBody').innerHTML = audits.map(a => `
+        <tr>
+          <td class="mono">${a.seq}</td>
+          <td class="mono" style="font-size:0.7rem;"><strong>${escapeHtml(a.action)}</strong></td>
+          <td class="mono" style="font-size:0.7rem;">${escapeHtml(a.tenant_id)}</td>
+          <td><span class="tag ${a.status.includes('DENIED') ? 'tag-fail' : 'tag-pass'}">${escapeHtml(a.status)}</span></td>
+          <td class="mono" style="font-size:0.67rem;">${escapeHtml(a.prev_hash.slice(0, 10))} → ${escapeHtml(a.entry_hash.slice(0, 10))}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderSelectedEventInspector() {
+      if (!appState || !appState.events) return;
+      const ev = appState.events.find(e => e.event_id === selectedEventId) || appState.events[0];
+      if (!ev) return;
+
+      document.getElementById('selectedEventHeaderLeft').textContent =
+        `${ev.event_id} (${ev.tenant_id}) · Role: ${currentViewerRole}`;
+      const rightTag = document.getElementById('selectedEventHeaderRight');
+      rightTag.textContent = ev.decryption_state;
+      rightTag.className = ev.decryption_state === 'CRYPTO_SHREDDED' || ev.decryption_state === 'LOCKED_CIPHERTEXT'
+        ? 'tag tag-fail'
+        : 'tag tag-pass';
+
+      const inspectorObj = {
+        event_id: ev.event_id,
+        tenant_id: ev.tenant_id,
+        storage_status: ev.storage_status,
+        kms_envelope_header: {
+          alg: 'KMS-AEAD-256 (Per-Tenant Wrapped DEK)',
+          cmk_arn: ev.cmk_arn,
+          dek_id: ev.dek_id,
+          nonce_b64: ev.nonce_b64,
+          aad_binding_sha256: ev.aad_sha256,
+          on_disk_ciphertext_b64: ev.ciphertext_preview,
+          aead_auth_tag: ev.auth_tag_preview
+        },
+        pii_vault_quarantine: {
+          pii_tokens_replaced: ev.pii_tokens_count,
+          categories: ev.pii_categories
+        },
+        role_scoped_data_access: {
+          viewing_as_role: currentViewerRole,
+          ml_safe_tokenized_view: ev.sanitized_view,
+          auditor_authorized_view: ev.authorized_view
+        },
+        immutable_lineage_sha256: ev.lineage_sha256
+      };
+      document.getElementById('selectedEventInspectorBox').textContent = JSON.stringify(inspectorObj, null, 2);
+    }
+
+    window.selectEventRow = function(eventId) {
+      selectedEventId = eventId;
+      renderTab1();
+    };
+
+    window.changeViewerRole = async function(role) {
+      currentViewerRole = role;
+      await refreshState();
+    };
+
+    window.loadIngestPreset = function(idx) {
+      const p = INGEST_PRESETS[idx];
+      if (!p) return;
+      const sel = document.getElementById('ingestTenantSelect');
+      if ([...sel.options].some(o => o.value === p.tenant)) {
+        sel.value = p.tenant;
+      }
+      document.getElementById('ingestTypeSelect').value = p.type;
+      document.getElementById('ingestPayloadInput').value = p.text;
+    };
+
+    window.submitIngestEvent = async function() {
+      const tenant_id = document.getElementById('ingestTenantSelect').value;
+      const event_type = document.getElementById('ingestTypeSelect').value;
+      const payload_text = document.getElementById('ingestPayloadInput').value.trim();
+      if (!tenant_id || !payload_text) return;
+
+      const btn = document.getElementById('ingestSubmitBtn');
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/events/ingest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tenant_id, event_type, payload_text })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showTab1Banner('deny', '🛑 Ingestion Rejected', data.error || 'Failed to ingest event');
+        } else {
+          selectedEventId = data.event.event_id;
+          await refreshState();
+          showTab1Banner(
+            'allow',
+            `✅ Sealed ${data.event.event_id} under KMS DEK ${data.event.dek_id} (${data.latency_ms} ms)`,
+            `Tokenized ${data.event.pii_tokens_count} PII span(s) [${data.event.pii_categories.join(', ') || 'none'}] · Audit SHA-256: ${data.audit_entry_hash.slice(0, 18)}...`
+          );
+        }
+      } finally {
+        btn.disabled = false;
+      }
+    };
+
+    window.updateTenantConsent = async function(tenant_id, consent_policy) {
+      const ml_training_opt_in = consent_policy === 'ALLOW_ML_TRAINING';
+      const res = await fetch('/api/consent/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tenant_id, ml_training_opt_in, consent_policy })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showTab1Banner('deny', '🛑 Consent Update Blocked', data.error || 'Error updating consent');
+        return;
+      }
+      await refreshState();
+      const evictedText = (data.evicted_streaming_shards && data.evicted_streaming_shards.length > 0)
+        ? `Evicted from SQLite streaming ML shards: ${data.evicted_streaming_shards.join(', ')}`
+        : 'SQLite streaming shard index synchronized with active consent.';
+      showTab1Banner(
+        consent_policy === 'ALLOW_ML_TRAINING' ? 'allow' : 'warn',
+        `🛡️ Consent Updated: ${tenant_id} → ${data.consent_policy} (${data.latency_ms} ms)`,
+        evictedText
+      );
+    };
+
+    // =========================================================================
+    // TAB 2 RENDERING & ACTIONS
+    // =========================================================================
+    window.renderTenantEligibilityPreview = function() {
+      if (!appState) return;
+      const role = document.getElementById('snapRoleSelect').value;
+      const purpose = document.getElementById('snapPurposeSelect').value;
+      const purposeCfg = (appState.purposes_catalog || {})[purpose] || { allowed_roles: [], allowed_consents: [] };
+      const roleAllowed = (purposeCfg.allowed_roles || []).includes(role);
+
+      document.getElementById('snapEligibilityTableBody').innerHTML = (appState.tenants || []).map(t => {
+        let decisionHtml = '';
+        if (!roleAllowed) {
+          decisionHtml = `<span class="tag tag-fail">BLOCKED (ROLE 403)</span>`;
+        } else if (t.lifecycle_state !== 'ACTIVE') {
+          decisionHtml = `<span class="tag tag-fail">BLOCKED (CRYPTO-SHREDDED)</span>`;
+        } else if (t.consent_policy === 'STRICT_ZERO_RETENTION') {
+          decisionHtml = `<span class="tag tag-purple">BLOCKED (ZERO RETENTION)</span>`;
+        } else if (!(purposeCfg.allowed_consents || []).includes(t.consent_policy)) {
+          decisionHtml = `<span class="tag tag-warn">BLOCKED (OPTOUT_ML)</span>`;
+        } else {
+          decisionHtml = `<span class="tag tag-pass">ADMITTED (PII SCRUBBED)</span>`;
+        }
+        return `
+          <tr>
+            <td class="mono" style="font-size:0.71rem;"><strong>${escapeHtml(t.tenant_id)}</strong></td>
+            <td>${consentBadgeHtml(t.consent_policy, t.lifecycle_state)}</td>
+            <td class="mono">${t.total_events}</td>
+            <td>${decisionHtml}</td>
+          </tr>
+        `;
+      }).join('');
+    };
+
+    function renderTab2() {
+      if (!appState) return;
+      renderTenantEligibilityPreview();
+
+      const snaps = appState.ml_snapshots || [];
+      const displayResult = latestSnapshotResult || (snaps[0] ? {
+        authorized: true,
+        gate_verdict: snaps[0].status,
+        snapshot: snaps[0],
+        opt_out_leakage_rate: snaps[0].opt_out_leakage_rate,
+        authorization_latency_ms: snaps[0].authorization_latency_ms
+      } : null);
+
+      const banner = document.getElementById('snapVerdictBanner');
+      if (displayResult && !displayResult.authorized) {
+        banner.className = 'verdict-banner verdict-deny';
+        banner.innerHTML = `
+          <div>
+            <div style="font-weight:800; font-size:1.02rem;">🛑 HTTP 403 · ${escapeHtml(displayResult.gate_verdict)}</div>
+            <div style="font-size:0.83rem; margin-top:0.2rem;">${escapeHtml(displayResult.reason)}</div>
+          </div>
+          <span class="tag tag-fail">${displayResult.authorization_latency_ms} ms · 0 Rows Released</span>
+        `;
+        document.getElementById('snapAdmittedCountBadge').textContent = '0 events';
+        document.getElementById('snapBlockedCountBadge').textContent = 'ALL (Role Forbidden)';
+        document.getElementById('snapAdmittedTableBody').innerHTML =
+          `<tr><td colspan="3" class="mono" style="color:var(--fail);">Zero training records emitted — caller role blocked at Purpose-Bound Access Gate.</td></tr>`;
+        document.getElementById('snapBlockedTableBody').innerHTML =
+          `<tr><td colspan="3" class="mono">Caller <code>${escapeHtml(displayResult.requested_by_role)}</code> lacks permission for <code>${escapeHtml(displayResult.purpose)}</code>.</td></tr>`;
+      } else if (displayResult && displayResult.snapshot) {
+        const s = displayResult.snapshot;
+        banner.className = 'verdict-banner verdict-allow';
+        banner.innerHTML = `
+          <div>
+            <div style="font-weight:800; font-size:1.02rem;">✅ ${escapeHtml(s.snapshot_id)} · ${escapeHtml(s.status)} (Opt-Out Leakage: ${(s.opt_out_leakage_rate * 100).toFixed(1)}%)</div>
+            <div style="font-size:0.82rem; margin-top:0.2rem;">
+              Role <code>${escapeHtml(s.requested_by_role)}</code> → Purpose <code>${escapeHtml(s.purpose)}</code> · Admitted <strong>${s.admitted_count}</strong> event(s), Blocked <strong>${s.blocked_count}</strong> opted-out/tombstoned event(s), Quarantined <strong>${s.pii_spans_quarantined}</strong> PII token(s).
+            </div>
+          </div>
+          <span class="tag tag-pass">${s.authorization_latency_ms} ms</span>
+        `;
+        document.getElementById('snapAdmittedCountBadge').textContent = `${s.admitted_count} events`;
+        document.getElementById('snapBlockedCountBadge').textContent = `${s.blocked_count} events`;
+
+        document.getElementById('snapAdmittedTableBody').innerHTML = (s.admitted_records || []).map(r => `
+          <tr>
+            <td class="mono">${escapeHtml(r.event_id)}</td>
+            <td class="mono" style="font-size:0.69rem;">${escapeHtml(r.tenant_id)}</td>
+            <td class="mono" style="font-size:0.69rem;">${escapeHtml(r.pii_scrubbed_text)}</td>
+          </tr>
+        `).join('') || `<tr><td colspan="3" class="mono">0 eligible events</td></tr>`;
+
+        document.getElementById('snapBlockedTableBody').innerHTML = (s.blocked_records || []).map(b => `
+          <tr>
+            <td class="mono">${escapeHtml(b.event_id)}</td>
+            <td class="mono" style="font-size:0.69rem;">${escapeHtml(b.tenant_id)}</td>
+            <td><span class="tag tag-fail">${escapeHtml(b.block_reason)}</span></td>
+          </tr>
+        `).join('') || `<tr><td colspan="3" class="mono">0 blocked events</td></tr>`;
+      }
+
+      document.getElementById('snapshotsHistoryTableBody').innerHTML = snaps.map(s => `
+        <tr>
+          <td class="mono"><strong>${escapeHtml(s.snapshot_id)}</strong></td>
+          <td class="mono" style="font-size:0.7rem;">${escapeHtml(s.purpose)}</td>
+          <td class="mono" style="font-size:0.7rem;">${escapeHtml(s.requested_by_role)}</td>
+          <td class="mono">${s.admitted_count} admitted / ${s.blocked_count} blocked</td>
+          <td><span class="tag ${s.status.includes('PURGED') ? 'tag-warn' : 'tag-pass'}">${escapeHtml(s.status)}</span></td>
+          <td class="mono" style="font-size:0.68rem;">${escapeHtml((s.manifest_sha256 || '').slice(0, 16))}...</td>
+        </tr>
+      `).join('');
+    }
+
+    window.runSnapshotScenario = async function(role, purpose) {
+      document.getElementById('snapRoleSelect').value = role;
+      document.getElementById('snapPurposeSelect').value = purpose;
+      renderTenantEligibilityPreview();
+      await buildTrainingSnapshotLive();
+    };
+
+    window.buildTrainingSnapshotLive = async function() {
+      const requested_by_role = document.getElementById('snapRoleSelect').value;
+      const purpose = document.getElementById('snapPurposeSelect').value;
+      const res = await fetch('/api/training/build-snapshot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ purpose, requested_by_role })
+      });
+      latestSnapshotResult = await res.json();
+      await refreshState();
+    };
+
+    // =========================================================================
+    // TAB 3 RENDERING & ACTIONS
+    // =========================================================================
+    function renderTab3() {
+      if (!appState) return;
+      const tenants = appState.tenants || [];
+      const sel = document.getElementById('rtbfTenantSelect');
+      const prevVal = sel.value;
+      sel.innerHTML = tenants.map(t =>
+        `<option value="${escapeHtml(t.tenant_id)}">${escapeHtml(t.tenant_id)} — ${escapeHtml(t.name)} [${escapeHtml(t.lifecycle_state)}]</option>`
+      ).join('');
+      if (tenants.some(t => t.tenant_id === prevVal)) {
+        sel.value = prevVal;
+      }
+
+      document.getElementById('featureShardsTableBody').innerHTML = (appState.feature_shards || []).map(sh => `
+        <tr>
+          <td class="mono"><strong>${escapeHtml(sh.shard_id)}</strong></td>
+          <td class="mono" style="font-size:0.68rem;">${escapeHtml(sh.shard_type)}</td>
+          <td class="mono">${sh.total_indexed_events}</td>
+          <td class="mono" style="font-size:0.68rem;">${escapeHtml((sh.tenants_present || []).join(', ') || 'none')}</td>
+          <td><span class="tag ${sh.status.includes('RECOMPACTED') ? 'tag-warn' : 'tag-pass'}">${escapeHtml(sh.status)}</span></td>
+        </tr>
+      `).join('');
+
+      if (!latestRtbfResult && (appState.deletion_certificates || []).length > 0) {
+        const cert = appState.deletion_certificates[0];
+        latestRtbfResult = { certificate: cert, bedrock_compliance_audit: cert.bedrock_compliance_audit };
+      }
+
+      if (latestRtbfResult && latestRtbfResult.certificate) {
+        const cert = latestRtbfResult.certificate;
+        const audit = cert.bedrock_compliance_audit || latestRtbfResult.bedrock_compliance_audit || {};
+        const modeBadge = document.getElementById('bedrockAuditModeBadge');
+        modeBadge.textContent = `${audit.invocation_mode || 'bedrock-auditor'} (${audit.latency_ms || 0} ms)`;
+        modeBadge.className = (audit.invocation_mode || '').includes('live-aws-bedrock') ? 'tag tag-pass' : 'tag tag-blue';
+        document.getElementById('bedrockComplianceMemoBox').textContent = audit.memo || '';
+
+        const certCopy = Object.assign({}, cert);
+        delete certCopy.bedrock_compliance_audit;
+        document.getElementById('deletionCertificateJsonBox').textContent = JSON.stringify(certCopy, null, 2);
+      }
+
+      renderRtbfLineageSvg();
+    }
+
+    window.renderRtbfLineageSvg = function() {
+      if (!appState) return;
+      const tid = document.getElementById('rtbfTenantSelect').value;
+      const tenant = (appState.tenants || []).find(t => t.tenant_id === tid) || appState.tenants[0];
+      if (!tenant) return;
+
+      const isShredded = tenant.lifecycle_state !== 'ACTIVE';
+      document.getElementById('rtbfDagStateLabel').innerHTML = isShredded
+        ? `<span class="tag tag-fail">PURGED &amp; CRYPTO-SHREDDED (0 RESIDUAL)</span>`
+        : `<span class="tag tag-pass">ACTIVE LINEAGE FOOTPRINT</span>`;
+
+      const fillNode = isShredded ? '#FEE2E2' : '#DCFCE7';
+      const strokeNode = isShredded ? '#DC2626' : '#18181B';
+      const textStatus = isShredded ? '#991B1B' : '#15803D';
+
+      const dekLabel = isShredded ? 'DESTROYED (0x00 ZEROIZED)' : `ACTIVE (${tenant.kms_key.dek_id.slice(0, 18)})`;
+      const partLabel = isShredded ? `TOMBSTONED (${tenant.total_events} blocks locked)` : `ENCRYPTED (${tenant.active_events} active events)`;
+
+      const shardRefs = (appState.feature_shards || []).reduce((acc, s) => acc + ((s.tenant_counts || {})[tid] || 0), 0);
+      const snapRefs = (appState.ml_snapshots || []).reduce((acc, s) => acc + ((s.tenant_contributions || {})[tid] || 0), 0);
+
+      const shardStatus = isShredded ? 'PURGED (0 residual refs)' : `${shardRefs} indexed feature/LoRA refs`;
+      const snapStatus = isShredded ? 'RE-COMPACTED (0 residual rows)' : `${snapRefs} rows in ML snapshots`;
+
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 250" style="width:100%; height:auto; display:block;">
+          <defs>
+            <marker id="dagArr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="${strokeNode}"/>
+            </marker>
+          </defs>
+          <rect x="12" y="16" width="245" height="62" rx="5" fill="${fillNode}" stroke="${strokeNode}" stroke-width="2"/>
+          <text x="22" y="37" font-family="monospace" font-size="10.5" font-weight="700" fill="#141413">01. KMS TENANT KEYRING</text>
+          <text x="22" y="55" font-family="monospace" font-size="10" fill="${textStatus}">${escapeHtml(dekLabel)}</text>
+          <text x="22" y="69" font-family="monospace" font-size="9" fill="#52514E">${escapeHtml(tenant.tenant_id)}</text>
+
+          <rect x="298" y="16" width="248" height="62" rx="5" fill="${fillNode}" stroke="${strokeNode}" stroke-width="2"/>
+          <text x="308" y="37" font-family="monospace" font-size="10.5" font-weight="700" fill="#141413">02. SQLITE PARTITIONS</text>
+          <text x="308" y="55" font-family="monospace" font-size="10" fill="${textStatus}">${escapeHtml(partLabel)}</text>
+          <text x="308" y="69" font-family="monospace" font-size="9" fill="#52514E">AEAD Ciphertext Envelopes</text>
+
+          <rect x="12" y="148" width="245" height="78" rx="5" fill="#FFFFFF" stroke="${strokeNode}" stroke-width="2"/>
+          <text x="22" y="170" font-family="monospace" font-size="10.5" font-weight="700" fill="#141413">03. FEATURE &amp; LoRA SHARDS</text>
+          <text x="22" y="189" font-family="monospace" font-size="10" font-weight="700" fill="${textStatus}">${escapeHtml(shardStatus)}</text>
+          <text x="22" y="206" font-family="monospace" font-size="9" fill="#52514E">fs-prompt-embeddings-v2 + LoRA</text>
+
+          <rect x="298" y="148" width="248" height="78" rx="5" fill="#FFFFFF" stroke="${strokeNode}" stroke-width="2"/>
+          <text x="308" y="170" font-family="monospace" font-size="10.5" font-weight="700" fill="#141413">04. ML TRAINING SNAPSHOTS</text>
+          <text x="308" y="189" font-family="monospace" font-size="10" font-weight="700" fill="${textStatus}">${escapeHtml(snapStatus)}</text>
+          <text x="308" y="206" font-family="monospace" font-size="9" fill="#52514E">Manifest SHA-256 Re-Sealed</text>
+
+          <line x1="257" y1="47" x2="294" y2="47" stroke="${strokeNode}" stroke-width="2" marker-end="url(#dagArr)"/>
+          <line x1="380" y1="78" x2="170" y2="144" stroke="${strokeNode}" stroke-width="2" stroke-dasharray="${isShredded ? '5,3' : 'none'}" marker-end="url(#dagArr)"/>
+          <line x1="422" y1="78" x2="422" y2="144" stroke="${strokeNode}" stroke-width="2" stroke-dasharray="${isShredded ? '5,3' : 'none'}" marker-end="url(#dagArr)"/>
+        </svg>
+      `;
+      document.getElementById('rtbfSvgDagContainer').innerHTML = svg;
+    };
+
+    window.executeRtbfDeleteLive = async function() {
+      const tenant_id = document.getElementById('rtbfTenantSelect').value;
+      const regulation = document.getElementById('rtbfRegSelect').value;
+      const btn = document.getElementById('rtbfExecuteBtn');
+      btn.disabled = true;
+      document.getElementById('bedrockAuditModeBadge').textContent = 'Invoking Live Bedrock Nova...';
+      try {
+        const res = await fetch('/api/compliance/delete-tenant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tenant_id, regulation })
+        });
+        const data = await res.json();
+        latestRtbfResult = data;
+        await refreshState();
+      } finally {
+        btn.disabled = false;
+      }
+    };
+
+    // =========================================================================
+    // TAB 4 RENDERING & ACTIONS: STRICTLY FROM benchmarks/latest_results.json
+    // =========================================================================
+    function renderBenchmarksPanel(benchData) {
+      const b = Object.assign({}, VERIFIED_BENCHMARKS, benchData || {});
+      document.getElementById('benchEventsBadge').textContent =
+        `${(b.events_benchmarked || 1200).toLocaleString()} SQLite Events Verified`;
+      document.getElementById('benchShredBarLabel').textContent =
+        `${b.crypto_shred_undecipherable_pct}% Undecipherable (${b.shredded_ciphertexts_blocked}/${b.shredded_ciphertexts_tested})`;
+      document.getElementById('benchAuthBlockBarLabel').textContent =
+        `${b.unauthorized_access_block_rate_pct}% Blocked (${b.unauthorized_blocks_count}/${b.unauthorized_probes_count})`;
+      document.getElementById('benchRawJsonBox').textContent = JSON.stringify(b, null, 2);
+
+      // Keep top KPI cards strictly synced to measured JSON
+      document.getElementById('kpiLeakVal').textContent = `${Number(b.opt_out_leakage_rate_pct).toFixed(1)}%`;
+      document.getElementById('kpiLeakSub').textContent =
+        `${b.opt_out_leakage_count} / ${b.events_benchmarked.toLocaleString()} SQLite events · ${b.pii_spans_tokenized_total.toLocaleString()} PII spans tokenized (${b.raw_pii_leakage_count} leaks)`;
+      document.getElementById('kpiPurgeVal').textContent = `${Number(b.downstream_lineage_purge_pct).toFixed(1)}%`;
+      document.getElementById('kpiPurgeSub').textContent =
+        `${b.residual_deleted_records} residual records · ${b.crypto_shred_sql_purge_mean_ms} ms mean SQLite + DEK cascade`;
+      document.getElementById('kpiCryptoSub').textContent =
+        `${b.ingest_throughput_events_per_sec} ev/s (${b.p50_envelope_ingest_ms} ms p50) · ${b.shredded_ciphertexts_blocked}/${b.shredded_ciphertexts_tested} shredded locked`;
+      document.getElementById('kpiAuthVal').textContent = `${b.purpose_auth_p50_ms} ms`;
+      document.getElementById('kpiAuthSub').textContent =
+        `${b.purpose_auth_p95_ms} ms p95 (${b.purpose_auth_probes} probes) · ${b.unauthorized_blocks_count}/${b.unauthorized_probes_count} blocked (${b.unauthorized_access_block_rate_pct}%)`;
+
+      const rows = [
+        ['SQLite WAL + KMS Envelope Ingestion Throughput', `${b.ingest_throughput_events_per_sec} events/sec`, `${b.events_benchmarked} events across ${b.tenants_benchmarked} tenants`, 'MEASURED'],
+        ['Per-Event Envelope Seal + PII Tokenize Latency', `${b.p50_envelope_ingest_ms} ms p50 / ${b.p95_envelope_ingest_ms} ms p95 (${b.mean_envelope_ingest_ms} ms mean)`, `${b.pii_spans_tokenized_total} PII spans tokenized`, 'MEASURED'],
+        ['SQLite JOIN ML Snapshot Build Latency', `${b.ml_snapshot_build_ms} ms`, `${b.ml_snapshot_admitted_events} admitted / ${b.ml_snapshot_blocked_optout_events} blocked`, 'MEASURED'],
+        ['Opted-Out Tenant Leakage in ML Shards', `${b.opt_out_leakage_rate_pct.toFixed(1)}% (${b.opt_out_leakage_count} leaked)`, `${b.pii_spans_quarantined_in_snapshot} PII spans scrubbed in shard`, 'ZERO LEAK'],
+        ['Purpose-Bound SQLite Access Gate Latency', `${b.purpose_auth_p50_ms} ms p50 / ${b.purpose_auth_p95_ms} ms p95`, `${b.unauthorized_blocks_count}/${b.unauthorized_probes_count} (${b.unauthorized_access_block_rate_pct}%) blocked`, 'MEASURED'],
+        ['KMS DEK Crypto-Shred + SQLite Lineage Purge', `${b.crypto_shred_sql_purge_mean_ms} ms mean`, `${b.rtbf_tenants_shredded} tenants · ${b.residual_deleted_records} residual records`, '100% PURGE'],
+        ['Shredded Ciphertext Undecipherability', `${b.crypto_shred_undecipherable_pct}%`, `${b.shredded_ciphertexts_blocked}/${b.shredded_ciphertexts_tested} envelopes rejected`, 'VERIFIED'],
+        ['Live Amazon Bedrock Nova Compliance Audit', `${b.bedrock_audit_p50_ms} ms p50 (${b.bedrock_audit_mean_ms} ms mean)`, `${b.bedrock_audit_calls} calls · ${b.bedrock_total_tokens} tokens (${b.bedrock_model})`, 'LIVE AWS'],
+        ['SHA-256 Hash-Chained Audit Ledger Verification', `${b.audit_entries_verified} / ${b.audit_entries_verified} valid`, `SQLite audit_ledger integrity check`, 'INTACT']
+      ];
+
+      document.getElementById('benchSlaTableBody').innerHTML = rows.map(r => `
+        <tr>
+          <td><strong>${escapeHtml(r[0])}</strong></td>
+          <td class="mono">${escapeHtml(r[1])}</td>
+          <td class="mono" style="color:var(--ink-muted); font-size:0.72rem;">${escapeHtml(r[2])}</td>
+          <td><span class="tag tag-pass">${escapeHtml(r[3])}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    window.runLiveServerBenchmark = async function() {
+      const btn = document.getElementById('liveBenchBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Running Live SQLite + Bedrock Nova Benchmark...';
+      try {
+        const res = await fetch('/api/benchmarks/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ num_events: 600, live_bedrock: true })
+        });
+        if (res.ok) {
+          const liveBench = await res.json();
+          document.getElementById('benchSourceLabel').textContent =
+            `Live AWS Lambda (${liveBench.bedrock_invocation_mode})`;
+          renderBenchmarksPanel(liveBench);
+        }
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '⚡ Run Live Lambda + Bedrock Benchmark (/api/benchmarks/run)';
+      }
+    };
+
+    function renderAllPanels() {
+      renderTab1();
+      renderTab2();
+      renderTab3();
+      renderBenchmarksPanel(appState && appState.benchmarks ? appState.benchmarks : VERIFIED_BENCHMARKS);
+    }
+
+    // Boot Studio
+    parseHashState();
+    applyTheme(activeTheme);
+    switchTab(activeTab);
+    renderBenchmarksPanel(VERIFIED_BENCHMARKS);
+    probeHealth();
+    refreshState();
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vault-lineage-storage"
+version = "1.0.0"
+description = "Envelope-Encrypted AI Event Store, Customer ML Opt-Out Gate & Cryptographic Right-to-Delete Lineage Engine"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Ritwika Reddy Kancharla" }]
+dependencies = []
+
+[tool.setuptools.packages.find]
+include = ["vault_lineage*"]
