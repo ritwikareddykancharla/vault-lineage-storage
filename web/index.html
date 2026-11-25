@@ -7,7 +7,7 @@
   <meta name="description" content="Serverless AWS Applied AI Customer Content Storage &amp; Compliance Platform: SQLite WAL + Per-Tenant KMS Envelope Encryption (5,182.4 ev/s), Real-Time ML Opt-Out Gate (0.0% leakage across 1,200 events), Purpose-Bound Access Control (0.028 ms p50), and GDPR/CCPA Crypto-Shredding (2.805 ms) with Live Amazon Bedrock Nova Audit." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;family=Kalam:wght@400;700&amp;family=Martian+Mono:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg-paper: #FAF7F2;
@@ -76,7 +76,7 @@
       background-image: radial-gradient(var(--dot-color) 1.25px, transparent 1.25px);
       background-size: 20px 20px;
       color: var(--ink);
-      line-height: 1.55;
+      line-height: 1.68;
       padding-bottom: 4rem;
     }
 
@@ -110,11 +110,12 @@
     /* Sticky Jump-to-Section TOC Bar */
     .toc-bar {
       position: sticky;
-      top: 56px;
+      top: var(--topbar-h, 56px);
       z-index: 110;
       background: var(--bg-subtle);
       border-bottom: 2px solid var(--border);
-      padding: 0.45rem 0;
+      padding: 0.52rem 0;
+      box-shadow: 0 3px 0 rgba(24, 24, 27, 0.08);
     }
 
     .toc-inner {
@@ -124,6 +125,7 @@
       overflow-x: auto;
       white-space: nowrap;
       scrollbar-width: thin;
+      padding-bottom: 2px;
     }
 
     .toc-label {
@@ -137,20 +139,234 @@
 
     .toc-link {
       font-family: 'Martian Mono', monospace;
-      font-size: 0.7rem;
+      font-size: 0.71rem;
       font-weight: 700;
-      padding: 0.25rem 0.6rem;
-      border: 1.5px solid var(--border);
+      padding: 0.32rem 0.65rem;
+      border: 2px solid var(--border);
       background: var(--bg-card);
       color: var(--ink);
       text-decoration: none;
-      transition: background 0.12s ease, transform 0.08s ease;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.12s ease, color 0.12s ease, transform 0.08s ease, box-shadow 0.1s ease;
     }
 
     .toc-link:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--shadow);
+    }
+
+    .toc-link.active {
+      background: #15803D !important;
+      color: #FFFFFF !important;
+      border-color: var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.2rem 0.58rem;
+      background: #15803D;
+      color: #FFFFFF;
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Interactive Multi-Plane System Architecture Canvas */
+    .arch-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 0.7rem 0.95rem;
+      background: var(--bg-subtle);
+      border: 2px solid var(--border);
+      border-bottom: none;
+    }
+
+    .arch-viewport {
+      background-color: #FFFFFF;
+      background-image: radial-gradient(rgba(24, 24, 27, 0.14) 1px, transparent 1px);
+      background-size: 18px 18px;
+      border: 2px solid #18181B;
+      box-shadow: 4px 4px 0px #18181B;
+      overflow-x: auto;
+      padding: 0.9rem;
+    }
+
+    .arch-svg {
+      display: block;
+      width: 100%;
+      min-width: 980px;
+      height: auto;
+      transition: width 0.22s ease, min-width 0.22s ease;
+    }
+
+    .arch-svg.zoom-125 {
+      width: 125%;
+      min-width: 1225px;
+    }
+
+    .ex-hand { font-family: 'Caveat', 'Kalam', cursive; }
+    .ex-mono { font-family: 'Martian Mono', monospace; }
+
+    .ex-node {
+      cursor: pointer;
+      transition: filter 0.15s ease;
+    }
+
+    .ex-node:hover {
+      filter: drop-shadow(3px 3px 0px #15803D);
+    }
+
+    .ex-node.selected .ex-stroke-main {
+      stroke: #15803D !important;
+      stroke-width: 3.2px !important;
+    }
+
+    .arch-inspector {
+      margin-top: 1rem;
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 1.05rem 1.2rem;
+    }
+
+    .arch-node-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .arch-node-pill {
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.69rem;
+      font-weight: 700;
+      padding: 0.26rem 0.58rem;
+      border: 1.5px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .arch-node-pill.active {
+      background: #15803D;
+      color: #FFFFFF;
+    }
+
+    /* Human-Readable Callouts, Worked Examples & Dual-Layer Cards */
+    .plain-callout {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-left: 6px solid #15803D;
+      box-shadow: var(--shadow);
+      padding: 1.25rem 1.4rem;
+      margin-bottom: 1.35rem;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .plain-callout strong { color: var(--ink); }
+
+    .worked-example {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 1.35rem 1.45rem;
+      margin-top: 1.35rem;
+    }
+
+    .worked-steps {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    @media (max-width: 900px) {
+      .worked-steps { grid-template-columns: 1fr; }
+    }
+
+    .worked-step {
+      background: var(--bg-paper);
+      border: 2px solid var(--border);
+      padding: 1rem 1.1rem;
+      font-size: 0.89rem;
+      line-height: 1.65;
+    }
+
+    .impl-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+    @media (max-width: 920px) {
+      .impl-grid { grid-template-columns: 1fr; }
+    }
+
+    .impl-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .impl-head {
+      background: var(--bg-code);
+      color: var(--text-code);
+      padding: 0.72rem 1.05rem;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .impl-body {
+      padding: 1.2rem 1.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      font-size: 0.9rem;
+      line-height: 1.68;
+    }
+
+    .layer-plain {
       background: var(--accent-soft);
-      color: var(--accent-main);
-      transform: translateY(-1px);
+      border: 1.5px solid var(--border);
+      padding: 0.78rem 0.95rem;
+      font-size: 0.88rem;
+      line-height: 1.65;
+    }
+
+    .layer-hood {
+      background: var(--bg-paper);
+      border: 1.5px solid var(--border);
+      padding: 0.82rem 0.95rem;
+      font-size: 0.85rem;
+      line-height: 1.62;
+    }
+
+    .sandbox-guide {
+      background: var(--bg-subtle);
+      border: 2px solid var(--border);
+      border-left: 6px solid #15803D;
+      padding: 0.9rem 1.15rem;
+      margin-bottom: 1.15rem;
+      font-size: 0.88rem;
+      line-height: 1.65;
     }
 
     .brand {
@@ -799,7 +1015,7 @@
 </head>
 <body>
   <!-- Sticky Topbar -->
-  <header class="topbar">
+  <header class="topbar" id="topHeader">
     <div class="container topbar-inner">
       <a href="#studio-tabs" class="brand">
         <span class="brand-badge">VAULTLINEAGE v1.0</span>
@@ -820,15 +1036,15 @@
   </header>
 
   <!-- Sticky Jump-to-Section TOC -->
-  <nav class="toc-bar" aria-label="Jump to Section Table of Contents">
+  <nav class="toc-bar" id="stickyToc" aria-label="Jump to Section Table of Contents">
     <div class="container toc-inner">
       <span class="toc-label">Jump To:</span>
-      <a class="toc-link" href="#problem-statement">01 · Problem Statement</a>
-      <a class="toc-link" href="#architecture">02 · Excalidraw Architecture</a>
-      <a class="toc-link" href="#what-i-implemented">03 · What I Implemented</a>
-      <a class="toc-link" href="#studio-tabs">04 · Live 4-Tab Studio</a>
-      <a class="toc-link" href="#why-it-wins">05 · Why It Wins</a>
-      <a class="toc-link" href="#studio-tabs" onclick="switchTab('benchmarks')">06 · Measured Benchmarks</a>
+      <a class="toc-link active" href="#problem-statement" data-toc-sec="problem-statement">§01 · Problem Statement</a>
+      <a class="toc-link" href="#architecture" data-toc-sec="architecture">§02 · System Architecture</a>
+      <a class="toc-link" href="#implementation" data-toc-sec="implementation">§03 · Implementation</a>
+      <a class="toc-link" href="#design-tradeoffs" data-toc-sec="design-tradeoffs">§04 · Design Trade-Offs</a>
+      <a class="toc-link" href="#studio-tabs" data-toc-sec="studio-tabs">§05 · Interactive Studio</a>
+      <a class="toc-link" href="#studio-tabs" data-toc-sec="benchmarks-sec" id="tocBenchmarksLink">§06 · Benchmarks</a>
     </div>
   </nav>
 
@@ -894,12 +1110,13 @@
     </div>
   </section>
 
-  <!-- 01. CLEAR PROBLEM STATEMENT -->
+  <!-- §01 · PROBLEM STATEMENT -->
   <section id="problem-statement" class="section">
     <div class="container">
       <div class="section-header">
         <div>
-          <h2 class="section-title">01 · Clear Problem Statement</h2>
+          <span class="section-kicker">§01 · Problem Statement</span>
+          <h2 class="section-title">Why Applied AI Storage &amp; Compliance Pipelines Break Privacy SLAs</h2>
           <p class="section-desc">
             Why Applied AI storage platforms break privacy &amp; compliance SLAs when customer prompts, opt-out toggles, and foundation-model training shards are decoupled.
           </p>
@@ -907,47 +1124,370 @@
         <span class="tag tag-accent">AWS Applied AI Core Storage Challenge</span>
       </div>
 
+      <div class="plain-callout">
+        <div class="mono" style="font-size:0.72rem; font-weight:700; color:#15803D; text-transform:uppercase; margin-bottom:0.35rem;">💡 In Plain English — What Problem Does VaultLineage Solve?</div>
+        <p style="margin-bottom:0.55rem;">
+          Imagine thousands of enterprise companies sending sensitive customer support chats, code snippets, and clinical notes to an AI platform every second. Some companies allow their anonymized prompts to improve future AI models, while hospitals and banks click <strong>"Opt Out of AI Training"</strong>—and months later, a European customer exercises their legal <strong>GDPR Right to Be Forgotten</strong> ("delete everything you ever stored about us").
+        </p>
+        <p>
+          In conventional data lakes, all prompts land in one giant shared bucket encrypted with a single master key, and nightly scripts copy files into ML training datasets. If a customer opts out at 2:00 PM, their morning prompts still slip into tonight's model training job; and if they demand legal deletion, engineers have to hunt down and rewrite terabytes of old dataset snapshots by hand. <strong>VaultLineage solves this at the storage layer itself</strong>: every tenant gets its own cryptographic key, sensitive PII is replaced with irreversible tokens before touching disk, ML dataset builds check live consent in SQLite (<code>0 / 1,200</code> leaks), and deleting a tenant destroys its encryption key plus purges every downstream ML shard in <strong><code>2.805 ms</code></strong>.
+        </p>
+      </div>
+
       <div class="grid-3">
         <div class="card">
           <span class="step-badge">FAILURE MODE 01</span>
           <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.45rem;">Silent Opt-Out Drift into SFT Shards</h3>
-          <p style="font-size:0.87rem; color:var(--ink-muted);">
+          <p style="font-size:0.89rem; color:var(--ink-muted);">
             Enterprise customers toggle AI training consent asynchronously, while nightly batch pipelines copy raw event logs into vector stores and SFT/LoRA manifests—leaking opted-out tenant prompts into model weights.
           </p>
         </div>
         <div class="card">
           <span class="step-badge">FAILURE MODE 02</span>
           <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.45rem;">Raw PII &amp; Over-Privileged Data Reads</h3>
-          <p style="font-size:0.87rem; color:var(--ink-muted);">
+          <p style="font-size:0.89rem; color:var(--ink-muted);">
             Without pre-ingestion VPC PII tokenization and purpose-bound role gates, analytics engineers and ML training jobs read unredacted <code>SSN</code>, <code>EMAIL</code>, <code>CARD</code>, and <code>AKIA</code> credentials stored under a single shared bucket key.
           </p>
         </div>
         <div class="card">
           <span class="step-badge">FAILURE MODE 03</span>
           <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.45rem;">Unverifiable GDPR Art. 17 / CCPA Deletion</h3>
-          <p style="font-size:0.87rem; color:var(--ink-muted);">
+          <p style="font-size:0.89rem; color:var(--ink-muted);">
             Deleting rows in a primary table leaves orphaned copies across append-only partitions, feature stores, and historical training snapshots—failing regulatory erasure audits with no cryptographic proof of destruction.
           </p>
+        </div>
+      </div>
+
+      <div class="worked-example">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+          <div>
+            <span class="step-badge" style="margin-bottom:0.3rem;">CONCRETE END-TO-END WORKED EXAMPLE</span>
+            <h3 style="font-size:1.12rem; font-weight:800;">Following One Real Customer Prompt From Ingestion to GDPR Crypto-Shredding</h3>
+          </div>
+          <span class="tag tag-pass">Tenant: tenant-euro-nordic</span>
+        </div>
+        <div class="worked-steps">
+          <div class="worked-step">
+            <strong style="color:#15803D;">Step 1 — Prompt Arrives with Raw Card &amp; Email (<code>0.164 ms p50</code>):</strong><br/>
+            Nordic Retail's CFO submits: <em>"Investigate wire mismatch for <code>hannah.lindqvist@nordicretail.de</code>, card <code>4532-7700-1188-9012</code>."</em> Before anything touches SQLite, the VPC PII Vault replaces both spans with tenant-salted HMAC tokens (<code>&lt;PII:EMAIL:8f1c02a9&gt;</code>, <code>&lt;PII:CREDIT_CARD:31b9e440&gt;</code>) and seals the event under Nordic Retail's dedicated 256-bit DEK at <strong><code>5,182.4 events/sec</code></strong>.
+          </div>
+          <div class="worked-step">
+            <strong style="color:#15803D;">Step 2 — Customer Flips "Opt Out of ML Training":</strong><br/>
+            Ten minutes later, Nordic Retail's admin switches their policy from <code>ALLOW_ML_TRAINING</code> to <code>ANALYTICS_ONLY_OPTOUT_ML</code>. VaultLineage updates the live SQLite <code>tenants</code> registry and immediately evicts Nordic Retail's vectors from active streaming feature/LoRA shards—no waiting for a nightly cron job.
+          </div>
+          <div class="worked-step">
+            <strong style="color:#15803D;">Step 3 — ML Scientist Builds an SFT Training Dataset (<code>15.09 ms</code>):</strong><br/>
+            An Applied AI scientist requests a foundation-model SFT snapshot. First, the Purpose-Bound ACL verifies <code>ml_scientist × ml_foundation_training</code> in <strong><code>0.028 ms p50</code></strong> (blocking unauthorized roles like <code>analytics_engineer</code> or <code>external_contractor</code> <code>170/170</code> times). Next, the SQLite <code>JOIN</code> automatically excludes Nordic Retail's opted-out events (<strong><code>0 / 1,200</code> opt-out leaks</strong>).
+          </div>
+          <div class="worked-step">
+            <strong style="color:#15803D;">Step 4 — Customer Triggers GDPR Art. 17 Right-to-Delete (<code>2.805 ms</code>):</strong><br/>
+            Months later, Nordic Retail terminates its contract under GDPR Art. 17. VaultLineage overwrites Nordic Retail's 256-bit CMK/DEK bytes in memory with <code>0x00</code> (rendering <strong><code>180/180</code> historical ciphertexts permanently undecipherable</strong>), purges every downstream ML snapshot &amp; shard (`0` residual records), re-seals SHA-256 manifests, and calls live <strong>Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)</strong> to sign a legal compliance memo.
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 02. EXCALIDRAW ARCHITECTURE & 30-SECOND WALKTHROUGH -->
+  <!-- §02 · SYSTEM ARCHITECTURE -->
   <section id="architecture" class="section">
     <div class="container">
       <div class="section-header">
         <div>
-          <h2 class="section-title">02 · Excalidraw Architecture &amp; How It Works (30s Walkthrough)</h2>
+          <span class="section-kicker">§02 · System Architecture</span>
+          <h2 class="section-title">End-to-End Multi-Plane Storage, Consent &amp; Crypto-Shredding Architecture</h2>
           <p class="section-desc">
-            100% serverless AWS topology (<code>CloudFront</code> → private <code>S3 OAC</code> + Python 3.12 <code>Lambda</code> + <code>SQLite WAL</code> + <code>Amazon Bedrock Nova</code>) with every stage metric measured in <code>benchmarks/latest_results.json</code>.
+            100% serverless AWS topology (<code>CloudFront</code> → private <code>S3 OAC</code> + Python 3.12 <code>Lambda</code> + <code>SQLite WAL</code> + <code>Amazon Bedrock Nova</code>) with every stage metric measured in <code>benchmarks/latest_results.json</code>. <strong>Click any component below to inspect its contract.</strong>
           </p>
         </div>
         <button type="button" class="btn btn-secondary" onclick="resetDemoState()">↺ Reset Live Engine State</button>
       </div>
 
-      <div class="card" style="padding:0.9rem; background:#FAF7F2;">
-        <img src="architecture.svg" alt="VaultLineage Excalidraw Architecture Diagram" style="width:100%; height:auto; display:block;" />
+      <div class="arch-toolbar">
+        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+          <span class="mono" style="font-size:0.72rem; font-weight:700;">SYSTEM ARCHITECTURE · CLICK ANY COMPONENT TO INSPECT</span>
+          <span class="tag tag-accent-soft" id="archZoomLabel">Zoom: 100%</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap;">
+          <button type="button" class="btn btn-accent btn-sm" id="zoom100Btn">100%</button>
+          <button type="button" class="btn btn-secondary btn-sm" id="zoom125Btn">125%</button>
+          <button type="button" class="btn btn-secondary btn-sm" id="zoomResetBtn">↺ Reset</button>
+          <button type="button" class="btn btn-secondary btn-sm" id="downloadArchSvgBtn">⬇ Export SVG</button>
+        </div>
+      </div>
+
+      <div class="arch-viewport" id="archViewport">
+        <svg id="vaultArchSvg" class="arch-svg" viewBox="0 0 1220 756" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="VaultLineage Multi-Plane System Architecture Diagram">
+          <defs>
+            <pattern id="vlDotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="1" fill="#D4D4D8" />
+            </pattern>
+          </defs>
+
+          <!-- Whiteboard Base -->
+          <rect x="0" y="0" width="1220" height="756" fill="#FFFFFF" />
+          <rect x="0" y="0" width="1220" height="756" fill="url(#vlDotGrid)" opacity="0.65" />
+
+          <!-- ============================================================= -->
+          <!-- PLANE 1: AWS EDGE DELIVERY                                    -->
+          <!-- ============================================================= -->
+          <path d="M 22,18 Q 600,14 1196,19 Q 1201,94 1195,168 Q 610,172 24,167 Q 19,92 22,18 Z" fill="#FAFAFA" stroke="#71717A" stroke-width="1.6" stroke-dasharray="8 6" />
+          <text x="36" y="40" class="ex-hand" font-size="21" font-weight="700" fill="#15803D">① AWS Edge Delivery Plane (100% Serverless · 0 EC2 · 0 RDS · $0 Idle)</text>
+
+          <!-- Node 1: User Browser -->
+          <g class="ex-node" data-arch-node="edge-browser" tabindex="0">
+            <path d="M 38,56 Q 136,53 234,57 Q 238,98 233,140 Q 135,143 39,139 Q 35,97 38,56 Z" fill="#DBEAFE" />
+            <path class="ex-stroke-main" d="M 38,56 Q 136,53 234,57 Q 238,98 233,140 Q 135,143 39,139 Q 35,97 38,56 Z" fill="none" stroke="#18181B" stroke-width="2.1" stroke-linejoin="round" />
+            <path d="M 40,58 Q 138,56 232,59 Q 235,99 231,138 Q 134,140 41,137 Q 37,96 40,58 Z" fill="none" stroke="#18181B" stroke-width="1.1" opacity="0.65" />
+            <text x="136" y="84" text-anchor="middle" class="ex-hand" font-size="22" font-weight="700" fill="#18181B">User Browser</text>
+            <text x="136" y="106" text-anchor="middle" class="ex-mono" font-size="10.1" font-weight="600" fill="#1E3A8A">4-Tab Studio &amp; Sticky TOC</text>
+            <text x="136" y="124" text-anchor="middle" class="ex-mono" font-size="9.5" fill="#3F3F46">location.hash · Stateless UI</text>
+          </g>
+
+          <!-- Arrow: Browser -> CloudFront -->
+          <path d="M 237,98 Q 268,94 298,98" fill="none" stroke="#18181B" stroke-width="2.1" stroke-dasharray="6 4" stroke-linecap="round" />
+          <path d="M 289,92 L 300,98 L 289,104" fill="none" stroke="#18181B" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+          <text x="268" y="87" text-anchor="middle" class="ex-hand" font-size="16" font-weight="700" fill="#18181B">HTTPS</text>
+
+          <!-- Node 2: Amazon CloudFront -->
+          <g class="ex-node" data-arch-node="edge-cloudfront" tabindex="0">
+            <path d="M 304,56 Q 430,52 556,57 Q 560,98 555,140 Q 428,144 305,139 Q 301,97 304,56 Z" fill="#DCFCE7" />
+            <path class="ex-stroke-main" d="M 304,56 Q 430,52 556,57 Q 560,98 555,140 Q 428,144 305,139 Q 301,97 304,56 Z" fill="none" stroke="#18181B" stroke-width="2.1" stroke-linejoin="round" />
+            <path d="M 306,59 Q 431,55 554,59 Q 557,99 553,138 Q 429,141 307,137 Z" fill="none" stroke="#18181B" stroke-width="1.1" opacity="0.65" />
+            <text x="430" y="84" text-anchor="middle" class="ex-hand" font-size="22" font-weight="700" fill="#18181B">Amazon CloudFront (HTTPS)</text>
+            <text x="430" y="106" text-anchor="middle" class="ex-mono" font-size="10.1" font-weight="600" fill="#15803D">TLS 1.3 · E8F0BH3Z2RT5V</text>
+            <text x="430" y="124" text-anchor="middle" class="ex-mono" font-size="9.5" fill="#3F3F46">Routes /* static &amp; /api/*</text>
+          </g>
+
+          <!-- Branch Arrows from CloudFront to S3 and Lambda -->
+          <path d="M 559,80 Q 596,68 634,68" fill="none" stroke="#18181B" stroke-width="2" stroke-dasharray="6 4" stroke-linecap="round" />
+          <path d="M 625,62 L 636,68 L 625,74" fill="none" stroke="#18181B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <text x="596" y="61" text-anchor="middle" class="ex-hand" font-size="15" font-weight="700" fill="#15803D">OAC GET</text>
+
+          <path d="M 559,116 Q 596,128 634,128" fill="none" stroke="#18181B" stroke-width="2" stroke-dasharray="6 4" stroke-linecap="round" />
+          <path d="M 625,122 L 636,128 L 625,134" fill="none" stroke="#18181B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <text x="596" y="145" text-anchor="middle" class="ex-hand" font-size="15" font-weight="700" fill="#9A3412">/api/*</text>
+
+          <!-- Node 3a: Private S3 Bucket (OAC) -->
+          <g class="ex-node" data-arch-node="edge-s3" tabindex="0">
+            <path d="M 640,40 Q 775,37 910,41 Q 913,67 909,92 Q 774,95 641,91 Q 637,66 640,40 Z" fill="#DCFCE7" />
+            <path class="ex-stroke-main" d="M 640,40 Q 775,37 910,41 Q 913,67 909,92 Q 774,95 641,91 Q 637,66 640,40 Z" fill="none" stroke="#18181B" stroke-width="2" />
+            <path d="M 642,42 Q 776,40 908,43 Q 910,67 907,90 Q 773,92 643,89 Z" fill="none" stroke="#18181B" stroke-width="1" opacity="0.6" />
+            <text x="775" y="63" text-anchor="middle" class="ex-hand" font-size="20" font-weight="700" fill="#18181B">Private S3 Bucket (OAC)</text>
+            <text x="775" y="81" text-anchor="middle" class="ex-mono" font-size="9.5" fill="#15803D">web/index.html · BlockPublicAccess</text>
+          </g>
+
+          <!-- Node 3b: AWS Lambda (Python 3.12) -->
+          <g class="ex-node" data-arch-node="edge-lambda" tabindex="0">
+            <path d="M 640,102 Q 775,99 910,103 Q 913,130 909,156 Q 774,159 641,155 Q 637,129 640,102 Z" fill="#FFE8D6" />
+            <path class="ex-stroke-main" d="M 640,102 Q 775,99 910,103 Q 913,130 909,156 Q 774,159 641,155 Q 637,129 640,102 Z" fill="none" stroke="#18181B" stroke-width="2" />
+            <path d="M 642,104 Q 776,102 908,105 Q 910,130 907,154 Q 773,156 643,153 Z" fill="none" stroke="#18181B" stroke-width="1" opacity="0.6" />
+            <text x="775" y="125" text-anchor="middle" class="ex-hand" font-size="20" font-weight="700" fill="#18181B">AWS Lambda (Python 3.12)</text>
+            <text x="775" y="144" text-anchor="middle" class="ex-mono" font-size="9.5" fill="#9A3412">vault_lineage/server.py · REST Router</text>
+          </g>
+
+          <!-- Tilted Sticky-Note Callout -->
+          <g transform="rotate(-1.6 1055 96)">
+            <path d="M 936,42 L 1176,42 L 1176,136 L 1158,152 L 936,152 Z" fill="#FEF3C7" stroke="#18181B" stroke-width="2" />
+            <path d="M 1158,152 L 1158,136 L 1176,136" fill="#FDE68A" stroke="#18181B" stroke-width="1.6" />
+            <text x="950" y="68" class="ex-hand" font-size="19" font-weight="700" fill="#92400E">📌 Measured SLAs</text>
+            <text x="950" y="91" class="ex-hand" font-size="17" font-weight="600" fill="#18181B">• 5,182.4 ev/s KMS + WAL</text>
+            <text x="950" y="112" class="ex-hand" font-size="17" font-weight="600" fill="#18181B">• 0 / 1,200 opt-out leaks</text>
+            <text x="950" y="133" class="ex-hand" font-size="17" font-weight="700" fill="#15803D">• 2.805 ms RTBF purge</text>
+          </g>
+
+          <!-- Dashed Arrow: Lambda -> Plane 2 Storage & Encryption -->
+          <path d="M 775,157 Q 770,180 612,196" fill="none" stroke="#18181B" stroke-width="2.1" stroke-dasharray="7 5" stroke-linecap="round" />
+          <path d="M 621,190 L 610,197 L 622,202" fill="none" stroke="#18181B" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+          <text x="765" y="185" class="ex-hand" font-size="16" font-weight="700" fill="#18181B">Ingest / Consent / RTBF API</text>
+
+          <!-- ============================================================= -->
+          <!-- PLANE 2: VPC PII VAULT & KMS ENVELOPE STORAGE                 -->
+          <!-- ============================================================= -->
+          <path d="M 22,198 Q 610,194 1196,199 Q 1200,270 1195,340 Q 608,344 24,339 Q 19,268 22,198 Z" fill="#F8FAFC" stroke="#1E40AF" stroke-width="1.6" stroke-dasharray="8 6" />
+          <text x="36" y="221" class="ex-hand" font-size="21" font-weight="700" fill="#1D4ED8">② Pre-Ingestion VPC PII Vault, Per-Tenant KMS Keyring &amp; SQLite WAL Dual-Envelope Partitions</text>
+
+          <!-- Storage Node 1: VPC PII Tokenizer -->
+          <g class="ex-node" data-arch-node="pii-vault" tabindex="0">
+            <path d="M 42,235 Q 218,231 394,236 Q 398,281 393,326 Q 216,330 43,325 Q 39,280 42,235 Z" fill="#DBEAFE" />
+            <path class="ex-stroke-main" d="M 42,235 Q 218,231 394,236 Q 398,281 393,326 Q 216,330 43,325 Q 39,280 42,235 Z" fill="none" stroke="#18181B" stroke-width="2.1" />
+            <path d="M 45,238 Q 219,235 391,239 Q 394,282 390,323 Q 217,327 46,322 Z" fill="none" stroke="#18181B" stroke-width="1.1" opacity="0.65" />
+            <text x="218" y="263" text-anchor="middle" class="ex-hand" font-size="22" font-weight="700" fill="#18181B">Deterministic VPC PII Vault</text>
+            <text x="218" y="285" text-anchor="middle" class="ex-mono" font-size="9.8" font-weight="600" fill="#1E3A8A">Tenant-Salted HMAC-SHA256 (6 Classes)</text>
+            <text x="218" y="304" text-anchor="middle" class="ex-mono" font-size="9.4" fill="#3F3F46">1,800 PII tokens · 0 raw PII leaks</text>
+          </g>
+
+          <path d="M 397,280 L 428,280" fill="none" stroke="#18181B" stroke-width="2" stroke-dasharray="5 4" />
+          <path d="M 421,274 L 430,280 L 421,286" fill="none" stroke="#18181B" stroke-width="2" />
+
+          <!-- Storage Node 2: Per-Tenant KMS Keyring -->
+          <g class="ex-node" data-arch-node="kms-keyring" tabindex="0">
+            <path d="M 432,235 Q 610,231 788,236 Q 792,281 787,326 Q 609,330 433,325 Q 429,280 432,235 Z" fill="#FFE8D6" />
+            <path class="ex-stroke-main" d="M 432,235 Q 610,231 788,236 Q 792,281 787,326 Q 609,330 433,325 Q 429,280 432,235 Z" fill="none" stroke="#18181B" stroke-width="2.1" />
+            <path d="M 435,238 Q 611,235 785,239 Q 788,282 784,323 Q 608,327 436,322 Z" fill="none" stroke="#18181B" stroke-width="1.1" opacity="0.65" />
+            <text x="610" y="263" text-anchor="middle" class="ex-hand" font-size="22" font-weight="700" fill="#18181B">Per-Tenant KMS Keyring</text>
+            <text x="610" y="285" text-anchor="middle" class="ex-mono" font-size="9.8" font-weight="600" fill="#9A3412">KMS-AEAD-256 · 256-bit CMK + DEK</text>
+            <text x="610" y="304" text-anchor="middle" class="ex-mono" font-size="9.4" fill="#3F3F46">5,182.4 events/sec · 0.164 ms p50</text>
+          </g>
+
+          <path d="M 791,280 L 821,280" fill="none" stroke="#18181B" stroke-width="2" stroke-dasharray="5 4" />
+          <path d="M 814,274 L 823,280 L 814,286" fill="none" stroke="#18181B" stroke-width="2" />
+
+          <!-- Storage Node 3: SQLite WAL Dual-Envelope Partitions -->
+          <g class="ex-node" data-arch-node="sqlite-wal" tabindex="0">
+            <path d="M 824,235 Q 1001,231 1178,236 Q 1182,281 1177,326 Q 1000,330 825,325 Q 821,280 824,235 Z" fill="#DCFCE7" />
+            <path class="ex-stroke-main" d="M 824,235 Q 1001,231 1178,236 Q 1182,281 1177,326 Q 1000,330 825,325 Q 821,280 824,235 Z" fill="none" stroke="#18181B" stroke-width="2.1" />
+            <path d="M 827,238 Q 1002,235 1175,239 Q 1178,282 1174,323 Q 999,327 828,322 Z" fill="none" stroke="#18181B" stroke-width="1.1" opacity="0.65" />
+            <text x="1001" y="263" text-anchor="middle" class="ex-hand" font-size="22" font-weight="700" fill="#18181B">SQLite WAL Event Partitions</text>
+            <text x="1001" y="285" text-anchor="middle" class="ex-mono" font-size="9.8" font-weight="600" fill="#15803D">Dual Raw + Sanitized AEAD Envelopes</text>
+            <text x="1001" y="304" text-anchor="middle" class="ex-mono" font-size="9.4" fill="#3F3F46">1,200 events · 20 tenants · AAD-bound</text>
+          </g>
+
+          <!-- Vertical Dashed Arrows: Plane 2 -> Plane 3 -->
+          <path d="M 218,328 Q 218,368 134,422" fill="none" stroke="#18181B" stroke-width="2" stroke-dasharray="6 4" stroke-linecap="round" />
+          <path d="M 142,413 L 133,423 L 146,423" fill="none" stroke="#18181B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <text x="208" y="366" class="ex-hand" font-size="15.5" font-weight="700" fill="#15803D">Sanitized Tokens</text>
+
+          <path d="M 610,328 Q 560,368 504,422" fill="none" stroke="#18181B" stroke-width="2" stroke-dasharray="6 4" stroke-linecap="round" />
+          <path d="M 512,413 L 503,423 L 516,423" fill="none" stroke="#18181B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <text x="592" y="366" class="ex-hand" font-size="15.5" font-weight="700" fill="#9A3412">Role × Purpose DEK Gate</text>
+
+          <path d="M 1001,328 Q 860,368 702,422" fill="none" stroke="#18181B" stroke-width="2" stroke-dasharray="6 4" stroke-linecap="round" />
+          <path d="M 710,414 L 700,423 L 713,425" fill="none" stroke="#18181B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <text x="895" y="366" class="ex-hand" font-size="15.5" font-weight="700" fill="#15803D">Live SQLite Consent JOIN</text>
+
+          <!-- ============================================================= -->
+          <!-- PLANE 3: CONSENT GATE & PURPOSE-BOUND ML SNAPSHOT PIPELINE    -->
+          <!-- ============================================================= -->
+          <g class="ex-node selected" data-arch-node="consent-pipeline" tabindex="0">
+            <path d="M 22,384 Q 610,380 1196,385 Q 1200,458 1195,532 Q 608,536 24,531 Q 19,457 22,384 Z" fill="#F0FDF4" />
+            <path class="ex-stroke-main" d="M 22,384 Q 610,380 1196,385 Q 1200,458 1195,532 Q 608,536 24,531 Q 19,457 22,384 Z" fill="none" stroke="#18181B" stroke-width="2.1" />
+            <text x="36" y="408" class="ex-hand" font-size="21" font-weight="700" fill="#15803D">③ Real-Time Consent Gate &amp; Purpose-Bound ML Snapshot Pipeline (0.0% Opt-Out Leakage · 170/170 Unauthorized Blocked)</text>
+
+            <!-- Stage 1 -->
+            <path d="M 40,425 Q 124,422 208,426 Q 211,468 207,510 Q 123,513 41,509 Q 38,467 40,425 Z" fill="#DCFCE7" stroke="#18181B" stroke-width="1.9" />
+            <text x="124" y="451" text-anchor="middle" class="ex-hand" font-size="17" font-weight="700" fill="#18181B">01 · EVENT_SEALED</text>
+            <text x="124" y="473" text-anchor="middle" class="ex-mono" font-size="8.7" fill="#15803D">0.164 ms p50</text>
+            <text x="124" y="492" text-anchor="middle" class="ex-mono" font-size="8.4" fill="#3F3F46">AAD Tenant-Bound</text>
+
+            <path d="M 210,468 L 228,468" stroke="#18181B" stroke-width="2" />
+            <path d="M 222,463 L 230,468 L 222,473" fill="none" stroke="#18181B" stroke-width="2" />
+
+            <!-- Stage 2 -->
+            <path d="M 232,425 Q 316,422 400,426 Q 403,468 399,510 Q 315,513 233,509 Q 230,467 232,425 Z" fill="#DCFCE7" stroke="#18181B" stroke-width="1.9" />
+            <text x="316" y="451" text-anchor="middle" class="ex-hand" font-size="17" font-weight="700" fill="#18181B">02 · CONSENT_STATE</text>
+            <text x="316" y="473" text-anchor="middle" class="ex-mono" font-size="8.7" fill="#15803D">Live Opt-Out Flip</text>
+            <text x="316" y="492" text-anchor="middle" class="ex-mono" font-size="8.4" fill="#3F3F46">Instant Eviction</text>
+
+            <path d="M 402,468 L 420,468" stroke="#18181B" stroke-width="2" />
+            <path d="M 414,463 L 422,468 L 414,473" fill="none" stroke="#18181B" stroke-width="2" />
+
+            <!-- Stage 3 -->
+            <path d="M 424,425 Q 508,422 592,426 Q 595,468 591,510 Q 507,513 425,509 Q 422,467 424,425 Z" fill="#FEF3C7" stroke="#18181B" stroke-width="1.9" />
+            <text x="508" y="451" text-anchor="middle" class="ex-hand" font-size="17" font-weight="700" fill="#18181B">03 · PURPOSE_ACL</text>
+            <text x="508" y="473" text-anchor="middle" class="ex-mono" font-size="8.7" fill="#92400E">0.028 ms p50</text>
+            <text x="508" y="492" text-anchor="middle" class="ex-mono" font-size="8.4" fill="#3F3F46">170/170 Blocked</text>
+
+            <path d="M 594,468 L 612,468" stroke="#18181B" stroke-width="2" />
+            <path d="M 606,463 L 614,468 L 606,473" fill="none" stroke="#18181B" stroke-width="2" />
+
+            <!-- Stage 4 -->
+            <path d="M 616,425 Q 700,422 784,426 Q 787,468 783,510 Q 699,513 617,509 Q 614,467 616,425 Z" fill="#DCFCE7" stroke="#18181B" stroke-width="1.9" />
+            <text x="700" y="451" text-anchor="middle" class="ex-hand" font-size="17" font-weight="700" fill="#18181B">04 · SQLITE_JOIN</text>
+            <text x="700" y="473" text-anchor="middle" class="ex-mono" font-size="8.7" fill="#15803D">15.09 ms Build</text>
+            <text x="700" y="492" text-anchor="middle" class="ex-mono" font-size="8.4" fill="#3F3F46">600 In / 600 Out</text>
+
+            <path d="M 786,468 L 804,468" stroke="#18181B" stroke-width="2" />
+            <path d="M 798,463 L 806,468 L 798,473" fill="none" stroke="#18181B" stroke-width="2" />
+
+            <!-- Stage 5 -->
+            <path d="M 808,425 Q 892,422 976,426 Q 979,468 975,510 Q 891,513 809,509 Q 806,467 808,425 Z" fill="#DCFCE7" stroke="#18181B" stroke-width="1.9" />
+            <text x="892" y="451" text-anchor="middle" class="ex-hand" font-size="16.5" font-weight="700" fill="#18181B">05 · SNAPSHOT_SEALED</text>
+            <text x="892" y="473" text-anchor="middle" class="ex-mono" font-size="8.7" fill="#15803D">0 / 1,200 Leaks</text>
+            <text x="892" y="492" text-anchor="middle" class="ex-mono" font-size="8.4" fill="#3F3F46">SHA-256 Manifest</text>
+
+            <path d="M 978,468 L 996,468" stroke="#18181B" stroke-width="2" />
+            <path d="M 990,463 L 998,468 L 990,473" fill="none" stroke="#18181B" stroke-width="2" />
+
+            <!-- Stage 6 -->
+            <path d="M 1000,425 Q 1089,422 1178,426 Q 1181,468 1177,510 Q 1088,513 1001,509 Q 998,467 1000,425 Z" fill="#FFE8D6" stroke="#18181B" stroke-width="1.9" />
+            <text x="1089" y="451" text-anchor="middle" class="ex-hand" font-size="16.5" font-weight="700" fill="#18181B">06 · LINEAGE_SHARDS</text>
+            <text x="1089" y="473" text-anchor="middle" class="ex-mono" font-size="8.7" fill="#9A3412">SFT / LoRA / Vec</text>
+            <text x="1089" y="492" text-anchor="middle" class="ex-mono" font-size="8.4" fill="#3F3F46">Tracked by Tenant</text>
+          </g>
+
+          <!-- Dashed Arrows from Plane 3 to Plane 4 & Plane 5 -->
+          <path d="M 892,512 Q 520,554 240,584" fill="none" stroke="#DC2626" stroke-width="2.1" stroke-dasharray="7 5" stroke-linecap="round" />
+          <path d="M 248,577 L 238,585 L 250,589" fill="none" stroke="#DC2626" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+          <text x="410" y="558" class="ex-hand" font-size="16" font-weight="700" fill="#DC2626">GDPR Art. 17 / CCPA RTBF Cascade</text>
+
+          <path d="M 700,512 Q 645,552 610,584" fill="none" stroke="#6D28D9" stroke-width="2.1" stroke-dasharray="7 5" stroke-linecap="round" />
+          <path d="M 617,575 L 608,585 L 621,586" fill="none" stroke="#6D28D9" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+          <text x="665" y="562" class="ex-hand" font-size="16" font-weight="700" fill="#6D28D9">Erasure Proof Context</text>
+
+          <path d="M 1089,512 Q 1045,552 1002,584" fill="none" stroke="#B45309" stroke-width="2.1" stroke-dasharray="7 5" stroke-linecap="round" />
+          <path d="M 1008,574 L 1000,585 L 1013,585" fill="none" stroke="#B45309" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+          <text x="1080" y="562" class="ex-hand" font-size="16" font-weight="700" fill="#92400E">Append Hash Entry</text>
+
+          <!-- ============================================================= -->
+          <!-- PLANE 4 & 5: CRYPTO-SHRED + BEDROCK NOVA + SHA-256 LEDGER     -->
+          <!-- ============================================================= -->
+          <!-- Node 4: Crypto-Shredding & Lineage Purge -->
+          <g class="ex-node" data-arch-node="crypto-shred" tabindex="0">
+            <path d="M 32,588 Q 214,583 396,589 Q 401,660 395,730 Q 212,735 34,729 Q 29,658 32,588 Z" fill="#FEE2E2" />
+            <path class="ex-stroke-main" d="M 32,588 Q 214,583 396,589 Q 401,660 395,730 Q 212,735 34,729 Q 29,658 32,588 Z" fill="none" stroke="#18181B" stroke-width="2.2" />
+            <path d="M 35,591 Q 215,587 393,592 Q 397,660 392,727 Q 213,731 37,726 Z" fill="none" stroke="#18181B" stroke-width="1.1" opacity="0.65" />
+            <text x="214" y="618" text-anchor="middle" class="ex-hand" font-size="22" font-weight="700" fill="#991B1B">④ RTBF Crypto-Shred &amp; Purge</text>
+            <text x="214" y="643" text-anchor="middle" class="ex-mono" font-size="9.6" font-weight="700" fill="#18181B">Zeroizes 256-bit DEK + Shard Cascade</text>
+            <text x="214" y="666" text-anchor="middle" class="ex-mono" font-size="9.3" fill="#7F1D1D">180/180 shredded envelopes locked</text>
+            <rect x="58" y="684" width="312" height="28" fill="#FFFFFF" stroke="#18181B" stroke-width="1.6" />
+            <text x="214" y="702" text-anchor="middle" class="ex-mono" font-size="9.5" font-weight="700" fill="#DC2626">🔥 2.805 ms Purge · 0 Residual Rows</text>
+          </g>
+
+          <!-- Node 5a: Amazon Bedrock Nova Compliance Auditor -->
+          <g class="ex-node" data-arch-node="bedrock-audit" tabindex="0">
+            <path d="M 428,588 Q 610,583 792,589 Q 797,660 791,730 Q 608,735 430,729 Q 425,658 428,588 Z" fill="#F3E8FF" />
+            <path class="ex-stroke-main" d="M 428,588 Q 610,583 792,589 Q 797,660 791,730 Q 608,735 430,729 Q 425,658 428,588 Z" fill="none" stroke="#18181B" stroke-width="2.2" />
+            <path d="M 431,591 Q 611,587 789,592 Q 793,660 788,727 Q 609,731 433,726 Z" fill="none" stroke="#18181B" stroke-width="1.1" opacity="0.65" />
+            <text x="610" y="618" text-anchor="middle" class="ex-hand" font-size="22" font-weight="700" fill="#5B21B6">⑤ Amazon Bedrock Auditor</text>
+            <text x="610" y="643" text-anchor="middle" class="ex-mono" font-size="9.8" font-weight="700" fill="#18181B">us.amazon.nova-lite-v1:0</text>
+            <text x="610" y="666" text-anchor="middle" class="ex-mono" font-size="9.3" fill="#4C1D95">GDPR Art. 17 &amp; CCPA Legal Attestation</text>
+            <rect x="454" y="684" width="312" height="28" fill="#FFFFFF" stroke="#18181B" stroke-width="1.6" />
+            <text x="610" y="702" text-anchor="middle" class="ex-mono" font-size="9.4" font-weight="700" fill="#6D28D9">⚡ Live Converse API (2,923 ms p50)</text>
+          </g>
+
+          <path d="M 795,660 L 821,660" fill="none" stroke="#18181B" stroke-width="2" stroke-dasharray="5 4" />
+          <path d="M 814,654 L 823,660 L 814,666" fill="none" stroke="#18181B" stroke-width="2" />
+
+          <!-- Node 5b: Immutable SHA-256 Audit Ledger & Deletion Certificate -->
+          <g class="ex-node" data-arch-node="hash-ledger" tabindex="0">
+            <path d="M 826,588 Q 1010,583 1194,589 Q 1199,660 1193,730 Q 1008,735 828,729 Q 823,658 826,588 Z" fill="#FEF3C7" />
+            <path class="ex-stroke-main" d="M 826,588 Q 1010,583 1194,589 Q 1199,660 1193,730 Q 1008,735 828,729 Q 823,658 826,588 Z" fill="none" stroke="#18181B" stroke-width="2.2" />
+            <path d="M 829,591 Q 1011,587 1191,592 Q 1195,660 1190,727 Q 1009,731 831,726 Z" fill="none" stroke="#18181B" stroke-width="1.1" opacity="0.65" />
+            <text x="1010" y="618" text-anchor="middle" class="ex-hand" font-size="22" font-weight="700" fill="#92400E">⑤ SHA-256 Ledger &amp; Deletion Cert</text>
+            <text x="1010" y="643" text-anchor="middle" class="ex-mono" font-size="9.6" font-weight="700" fill="#18181B">prev_hash → entry_hash + HMAC-SHA256</text>
+            <text x="1010" y="666" text-anchor="middle" class="ex-mono" font-size="9.3" fill="#78350F">Tamper-Evident SQLite Audit Chain</text>
+            <rect x="854" y="684" width="312" height="28" fill="#DCFCE7" stroke="#18181B" stroke-width="1.6" />
+            <text x="1010" y="702" text-anchor="middle" class="ex-mono" font-size="9.5" font-weight="700" fill="#15803D">✓ 1,374 / 1,374 Entries Verified</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Interactive Component Node Inspector -->
+      <div class="arch-inspector" id="archInspector">
+        <div class="arch-node-pills" id="archNodePills">
+          <button type="button" class="arch-node-pill" data-arch-btn="edge-browser">1. User Browser</button>
+          <button type="button" class="arch-node-pill" data-arch-btn="edge-cloudfront">2. CloudFront Edge</button>
+          <button type="button" class="arch-node-pill" data-arch-btn="edge-s3">3. Private S3 (OAC)</button>
+          <button type="button" class="arch-node-pill" data-arch-btn="edge-lambda">4. Python 3.12 Lambda</button>
+          <button type="button" class="arch-node-pill" data-arch-btn="pii-vault">5. VPC PII Vault</button>
+          <button type="button" class="arch-node-pill" data-arch-btn="kms-keyring">6. KMS DEK Keyring</button>
+          <button type="button" class="arch-node-pill" data-arch-btn="sqlite-wal">7. SQLite WAL Store</button>
+          <button type="button" class="arch-node-pill active" data-arch-btn="consent-pipeline">8. Consent &amp; ML Gate</button>
+          <button type="button" class="arch-node-pill" data-arch-btn="crypto-shred">9. RTBF Crypto-Shred</button>
+          <button type="button" class="arch-node-pill" data-arch-btn="bedrock-audit">10. Bedrock Nova Audit</button>
+          <button type="button" class="arch-node-pill" data-arch-btn="hash-ledger">11. SHA-256 Ledger</button>
+        </div>
+        <div id="archInspectorDetail"></div>
       </div>
 
       <div class="walkthrough-grid">
@@ -983,50 +1523,176 @@
     </div>
   </section>
 
-  <!-- 03. WHAT I IMPLEMENTED -->
-  <section id="what-i-implemented" class="section">
+  <!-- §03 · IMPLEMENTATION -->
+  <section id="implementation" class="section">
+    <div id="what-i-implemented"></div>
     <div class="container">
       <div class="section-header">
         <div>
-          <h2 class="section-title">03 · What I Implemented (`vault_lineage/`)</h2>
+          <span class="section-kicker">§03 · Implementation</span>
+          <h2 class="section-title">Core Storage, Keyring &amp; Lineage Modules (<code>vault_lineage/</code>)</h2>
           <p class="section-desc">
-            Zero-dependency Python 3.12 core engine (`vault_lineage/storage_engine.py`, `server.py`, `benchmarks.py`) verified by 10/10 `unittest` suites and live AWS CloudFront deployment.
+            Every module pairs plain-English intuition with exact Python data structures, SQLite WAL queries, and cryptographic primitives implemented in <code>vault_lineage/storage_engine.py</code>, <code>server.py</code>, and <code>benchmarks.py</code>.
           </p>
         </div>
         <span class="tag tag-pass">10 / 10 Unit Tests Passing (0.14s)</span>
       </div>
 
-      <div class="grid-equal">
-        <div class="card">
-          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.5rem;">1. `KmsEnvelopeKeyring` + Dual-Envelope SQLite Partitions</h3>
-          <p style="font-size:0.86rem; color:var(--ink-muted); margin-bottom:0.75rem;">
-            Generates per-tenant 256-bit CMK wrapping secrets and 256-bit DEKs, encrypting every event into two distinct AEAD envelopes (`raw_envelope_json` for security auditors, `sanitized_envelope_json` for ML/analytics) inside indexed SQLite WAL tables (`idx_events_tenant_status`) with cross-tenant AAD tamper detection.
-          </p>
-          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.5rem;">2. Deterministic VPC PII Tokenizer &amp; Hash-Chained Ledger</h3>
-          <p style="font-size:0.86rem; color:var(--ink-muted);">
-            Scans `SSN`, `AWS_ACCESS_KEY`, `CREDIT_CARD`, `EMAIL`, `PHONE`, and `IP_ADDRESS` before encryption, replacing matches with tenant-isolated HMAC tokens (`&lt;PII:SSN:4d91be07&gt;`) and recording every mutation in SQLite `audit_ledger` (`prev_hash → entry_hash`).
-          </p>
+      <div class="impl-grid">
+        <div class="impl-card">
+          <div class="impl-head">
+            <span>MODULE 01 · PER-TENANT KMS ENVELOPE KEYRING</span>
+            <span style="color:#4ADE80;">vault_lineage/storage_engine.py</span>
+          </div>
+          <div class="impl-body">
+            <h3 style="font-size:1.08rem; font-weight:800;"><code>KmsEnvelopeKeyring</code> + Dual-Envelope SQLite WAL Partitions</h3>
+            <div class="layer-plain">
+              <strong>Plain-English Intuition:</strong> Instead of locking every customer's files inside one shared vault, each company gets its own unique padlock and key—and we store two separate locked versions of each event: a redacted version for AI scientists and an original version strictly for security auditors.
+            </div>
+            <div class="layer-hood">
+              <strong>Under the Hood (Crypto &amp; SQL):</strong> Mints a per-tenant 256-bit CMK wrapping secret and 256-bit Data Encryption Key (<code>DEK</code>). Seals <code>raw_envelope_json</code> and <code>sanitized_envelope_json</code> using <code>SHA256-CTR</code> keystream + <code>HMAC-SHA256</code> AEAD tag bound to Additional Authenticated Data <code>AAD = f"{tenant_id}|{event_id}|{cmk_arn}"</code> inside SQLite WAL (<code>PRAGMA journal_mode=WAL</code>, index <code>idx_events_tenant_status</code>) at <strong><code>5,182.4 events/sec</code></strong> (<code>0.164 ms p50</code>).
+            </div>
+          </div>
         </div>
 
-        <div class="card">
-          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.5rem;">3. Real-Time Opt-Out Gate &amp; Purpose-Bound Snapshot Builder</h3>
-          <p style="font-size:0.86rem; color:var(--ink-muted); margin-bottom:0.75rem;">
-            `build_training_snapshot()` validates `ROLE_CATALOG × PURPOSE_POLICIES` (`403` on role mismatch) and executes a live SQLite `JOIN` over `encrypted_events` and `tenants`, admitting only `ALLOW_ML_TRAINING` active partitions for SFT/LoRA while quarantining `ANALYTICS_ONLY_OPTOUT_ML` and `STRICT_ZERO_RETENTION`.
+        <div class="impl-card">
+          <div class="impl-head">
+            <span>MODULE 02 · VPC PII VAULT &amp; HASH LEDGER</span>
+            <span style="color:#93C5FD;">vault_lineage/storage_engine.py</span>
+          </div>
+          <div class="impl-body">
+            <h3 style="font-size:1.08rem; font-weight:800;">Deterministic PII Tokenization &amp; Tamper-Evident Audit Chain</h3>
+            <div class="layer-plain">
+              <strong>Plain-English Intuition:</strong> Before any text is saved, a scanner spots emails, credit cards, SSNs, phone numbers, IP addresses, and leaked AWS keys, swapping them for consistent pseudonyms so ML engineers can still see conversation structure without ever seeing real personal data.
+            </div>
+            <div class="layer-hood">
+              <strong>Under the Hood (Regex + HMAC Chain):</strong> Evaluates 6 compiled PII patterns in priority order and computes <code>HMAC-SHA256(tenant_salt, raw_match)[:8]</code> → <code>&lt;PII:SSN:4d91be07&gt;</code> (tokenizing <strong><code>1,800</code> PII spans</strong> with <code>0</code> raw leaks). Every state mutation appends to SQLite <code>audit_ledger</code> with <code>entry_hash = SHA256(prev_hash || seq || action || tenant_id || details_json)</code> (<strong><code>1,374 / 1,374</code> verified</strong>).
+            </div>
+          </div>
+        </div>
+
+        <div class="impl-card">
+          <div class="impl-head">
+            <span>MODULE 03 · LIVE CONSENT &amp; PURPOSE GATE</span>
+            <span style="color:#FDE68A;">vault_lineage/storage_engine.py · server.py</span>
+          </div>
+          <div class="impl-body">
+            <h3 style="font-size:1.08rem; font-weight:800;">Role × Purpose Authorization &amp; Zero-Leak ML Snapshot Builder</h3>
+            <div class="layer-plain">
+              <strong>Plain-English Intuition:</strong> Even if someone has database access, VaultLineage checks <em>who</em> is asking and <em>what</em> they are building. An analytics engineer can run aggregate charts, but if they try to export an AI training dataset—or if a tenant opted out five milliseconds ago—the request is blocked on the spot.
+            </div>
+            <div class="layer-hood">
+              <strong>Under the Hood (ACL Matrix &amp; SQLite JOIN):</strong> Evaluates <code>ROLE_CATALOG[role] × PURPOSE_POLICIES[purpose]</code> in <strong><code>0.028 ms p50</code></strong> (<code>0.039 ms p95</code>; <code>170/170</code> unauthorized probes rejected with HTTP <code>403</code>). Executes <code>SELECT e.* FROM encrypted_events e JOIN tenants t ON e.tenant_id = t.tenant_id WHERE t.consent_policy = 'ALLOW_ML_TRAINING' AND t.key_status = 'ACTIVE'</code> in <strong><code>15.09 ms</code></strong> (<code>600</code> admitted, <code>600</code> opted-out blocked, <strong><code>0.0%</code> leakage</strong>).
+            </div>
+          </div>
+        </div>
+
+        <div class="impl-card">
+          <div class="impl-head">
+            <span>MODULE 04 · RTBF CRYPTO-SHRED &amp; BEDROCK AUDITOR</span>
+            <span style="color:#DDD6FE;">vault_lineage/storage_engine.py · benchmarks.py</span>
+          </div>
+          <div class="impl-body">
+            <h3 style="font-size:1.08rem; font-weight:800;">Irreversible DEK Destruction, Shard Cascade &amp; Live Nova Memo</h3>
+            <div class="layer-plain">
+              <strong>Plain-English Intuition:</strong> Instead of trusting that every backup file was found, destroying a tenant's unique encryption key turns any remaining ciphertext into unreadable random noise—while VaultLineage simultaneously scrubs downstream ML snapshots and asks Amazon Bedrock Nova to draft an auditor-ready legal attestation.
+            </div>
+            <div class="layer-hood">
+              <strong>Under the Hood (Zeroization + Converse API):</strong> <code>delete_tenant_rtbf()</code> overwrites mutable <code>bytearray</code> DEK/CMK buffers in place with <code>0x00</code> (<strong><code>180/180</code> ciphertexts undecipherable</strong>), purges <code>feature_shard_lineage</code> + re-hashes historical <code>training_snapshots.manifest_sha256</code> in <strong><code>2.805 ms</code> mean</strong> (<code>0</code> residual rows), signs an <code>HMAC-SHA256</code> Deletion Certificate, and invokes <code>us.amazon.nova-lite-v1:0</code> (<code>2,923.03 ms p50</code> across <code>3</code> live audits).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- §04 · DESIGN TRADE-OFFS -->
+  <section id="design-tradeoffs" class="section">
+    <div id="why-it-wins"></div>
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="section-kicker">§04 · Design Trade-Offs</span>
+          <h2 class="section-title">Envelope Crypto-Shredding &amp; Lineage Gate vs. Conventional AI Data Lakes</h2>
+          <p class="section-desc">
+            Why per-tenant KMS envelope encryption and relational lineage joins outperform shared-key object lakes and ad-hoc SQL filters—and the exact engineering trade-offs involved.
           </p>
-          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.5rem;">4. Irreversible RTBF Crypto-Shredding + Live Bedrock Auditor</h3>
-          <p style="font-size:0.86rem; color:var(--ink-muted);">
-            `delete_tenant_rtbf()` zeroizes in-memory CMK/DEK bytearrays (`0x00`), tombstones SQLite partitions, purges `feature_shard_lineage` and historical ML snapshots (`manifest_sha256` re-sealed), signs an `HMAC-SHA256` Deletion Certificate, and invokes `us.amazon.nova-lite-v1:0` via `boto3` `converse()`.
+        </div>
+        <span class="tag tag-accent">Zero-Serverless Footprint (No EC2 / RDS / GPU)</span>
+      </div>
+
+      <div class="table-wrap" style="margin-bottom:1.25rem;">
+        <table>
+          <thead>
+            <tr>
+              <th>Architecture Pattern</th>
+              <th>Tenant Encryption Isolation</th>
+              <th>Real-Time ML Opt-Out Enforcement</th>
+              <th>GDPR / CCPA Deletion Across ML Shards</th>
+              <th>Audit &amp; Compliance Proof</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Naive Append-Only Object Lake + Ad-Hoc Row Deletes</strong></td>
+              <td>Single shared bucket KMS key; cross-tenant read blast radius</td>
+              <td>Delayed batch sync; high risk of opted-out leakage into SFT shards</td>
+              <td>Requires rewriting multi-TB Parquet archives; misses downstream LoRA copies</td>
+              <td>Unstructured application logs; no cryptographic proof</td>
+            </tr>
+            <tr>
+              <td><strong>2. Coarse DB Table ACLs Without PII Token Vault</strong></td>
+              <td>Table-level encryption only; raw PII exposed to ML scientists</td>
+              <td>Manual SQL <code>WHERE</code> filters prone to scientist query bugs</td>
+              <td>Deletes primary rows while feature-store embeddings retain memorized PII</td>
+              <td>No Merkle or HMAC deletion certificate</td>
+            </tr>
+            <tr class="winner-row">
+              <td><strong>3. VaultLineage (Per-Tenant KMS DEKs + SQLite Lineage Gate + Bedrock Auditor)</strong></td>
+              <td><strong>Dedicated 256-bit DEK per tenant</strong> + cross-tenant AAD + dual raw/PII-tokenized envelopes</td>
+              <td><strong>0.0% leakage (0/1,200)</strong>; instant SQLite shard eviction + role × purpose <code>403</code> gate (<code>0.028 ms</code> p50)</td>
+              <td><strong>Irreversible DEK zeroization + 100% SQLite shard &amp; snapshot re-compaction in <code>2.805 ms</code></strong></td>
+              <td><strong>1,374/1,374 SHA-256 hash-chained entries + HMAC Deletion Cert + Live Bedrock Nova Memo</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <span class="step-badge">TRADE-OFF 01 · DUAL ENVELOPES</span>
+          <h3 style="font-size:1.02rem; font-weight:800; margin-bottom:0.45rem;">~1.8× Ciphertext Storage vs. Zero-Copy Safe ML Reads</h3>
+          <p style="font-size:0.87rem; color:var(--ink-muted);">
+            <strong>Plain English:</strong> Storing both a redacted envelope and a raw auditor envelope uses slightly more disk space, but means ML pipelines never touch raw PII.<br/>
+            <strong>Under the Hood:</strong> Dual AEAD sealing adds only <code>0.164 ms p50</code> at ingest while guaranteeing <code>0</code> raw PII leaks across <code>1,800</code> spans without runtime regex re-scanning.
+          </p>
+        </div>
+        <div class="card">
+          <span class="step-badge">TRADE-OFF 02 · PER-TENANT DEKS</span>
+          <h3 style="font-size:1.02rem; font-weight:800; margin-bottom:0.45rem;">Keyring Metadata Overhead vs. O(1) Crypto-Shredding</h3>
+          <p style="font-size:0.87rem; color:var(--ink-muted);">
+            <strong>Plain English:</strong> Managing one key per tenant is slightly more bookkeeping than one global key, but makes legal deletion instantaneous.<br/>
+            <strong>Under the Hood:</strong> Wrapping per-tenant 256-bit DEKs lets RTBF zeroize key material + purge SQLite lineage in <code>2.805 ms</code> instead of rewriting multi-gigabyte object archives.
+          </p>
+        </div>
+        <div class="card">
+          <span class="step-badge">TRADE-OFF 03 · DETERMINISTIC + LLM</span>
+          <h3 style="font-size:1.02rem; font-weight:800; margin-bottom:0.45rem;">Code Enforces Deletion; Bedrock Writes the Audit Trail</h3>
+          <p style="font-size:0.87rem; color:var(--ink-muted);">
+            <strong>Plain English:</strong> Never trust an LLM to decide who gets access or whether data was deleted—use deterministic code for enforcement and AI for human-readable compliance reporting.<br/>
+            <strong>Under the Hood:</strong> Python + SQLite enforces <code>100.0%</code> ACL &amp; shred invariants first; <code>us.amazon.nova-lite-v1:0</code> summarizes verified SHA-256 digests after completion.
           </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 04. 4-TAB INTERACTIVE LIVE STUDIO -->
+  <!-- §05 · INTERACTIVE STUDIO & §06 · BENCHMARKS -->
   <main id="studio-tabs" class="container tabs-wrapper">
     <div class="section-header">
       <div>
-        <h2 class="section-title">04 · Interactive 4-Tab Live Studio (Connected to CloudFront `/api/*`)</h2>
+        <span class="section-kicker">§05 · Interactive Studio</span>
+        <h2 class="section-title">Live Envelope Storage, ML Snapshot Gate, RTBF Shredder &amp; Benchmarks</h2>
         <p class="section-desc">
           Every button below executes real HTTP requests against the Python 3.12 Lambda + SQLite + Amazon Bedrock Nova backend.
         </p>
@@ -1059,6 +1725,12 @@
 
     <!-- TAB 1: ENVELOPE-ENCRYPTED INGESTION & PER-TENANT CONSENT PLANE -->
     <section id="panel-ingest-consent" class="tab-panel active" role="tabpanel">
+      <div class="sandbox-guide">
+        <strong>🧭 How to Use This Sandbox (What to Click &amp; What Happens):</strong>
+        (1) Click any tenant's consent pill on the left to flip between <code>ALLOW_ML_TRAINING</code> and <code>ANALYTICS_ONLY_OPTOUT_ML</code> in live SQLite;
+        (2) Click one of the <strong>1-Click PII Presets</strong> and press <strong>"🔐 Seal &amp; Append Encrypted Event"</strong> to watch PII get tokenized and sealed under a 256-bit DEK;
+        (3) Switch the <strong>Viewing Data Interface As Role</strong> dropdown on the right (<code>security_auditor</code> vs. <code>ml_scientist</code> vs. <code>external_contractor</code>) and click any event row to compare raw AEAD ciphertext against role-authorized plaintext.
+      </div>
       <div class="sim-header">
         <div>
           <h3 class="sim-title">Envelope-Encrypted Event Ingestion &amp; Per-Tenant Consent Control Plane</h3>
@@ -1192,6 +1864,10 @@
 
     <!-- TAB 2: COMPLIANT ML TRAINING DATASET SNAPSHOT BUILDER -->
     <section id="panel-ml-snapshot" class="tab-panel" role="tabpanel">
+      <div class="sandbox-guide">
+        <strong>🧭 How to Use This Sandbox (What to Click &amp; What Happens):</strong>
+        Click <strong>"✅ ML Scientist → Foundation SFT"</strong> to build a compliant training manifest in SQLite—notice how opted-out tenants are automatically quarantined on the right with <code>0.0%</code> leakage and raw PII stays scrubbed. Then click <strong>"🛑 Analytics Eng → ML Build (403 Block)"</strong> to verify that an analytics principal is rejected at the purpose gate in <code>0.028 ms p50</code> before any row is read.
+      </div>
       <div class="sim-header">
         <div>
           <h3 class="sim-title">Compliant ML Training Dataset Snapshot Builder (<code>/api/training/build-snapshot</code>)</h3>
@@ -1334,6 +2010,10 @@
 
     <!-- TAB 3: GDPR/CCPA RIGHT-TO-DELETE CRYPTO-SHREDDING & LINEAGE PURGE -->
     <section id="panel-rtbf-delete" class="tab-panel" role="tabpanel">
+      <div class="sandbox-guide">
+        <strong>🧭 How to Use This Sandbox (What to Click &amp; What Happens):</strong>
+        Select a tenant (for example, <code>tenant-euro-nordic</code>) and click the red <strong>"🔥 Execute Crypto-Shred &amp; Lineage Purge"</strong> button. Watch all 4 stages in the SVG lineage DAG turn shredded as the tenant's 256-bit KMS DEK is zeroized, downstream Feature/LoRA shards &amp; ML snapshots are re-compacted (`0` residual rows), a signed SHA-256 Deletion Certificate is minted, and live <strong>Amazon Bedrock Nova</strong> generates the legal attestation memo.
+      </div>
       <div class="sim-header">
         <div>
           <h3 class="sim-title">GDPR / CCPA Right-to-Delete (<code>RTBF</code>) Crypto-Shredding &amp; Downstream Lineage Cascade</h3>
@@ -1421,6 +2101,11 @@
 
     <!-- TAB 4: MEASURED STORAGE, OPT-OUT & DELETION SLA BENCHMARK SUITE -->
     <section id="panel-benchmarks" class="tab-panel" role="tabpanel">
+      <div class="sandbox-guide">
+        <strong>🧭 How to Read &amp; Re-Run These Benchmarks:</strong>
+        <strong>Plain English:</strong> Every bar and latency figure below comes from executing real SQLite WAL writes, real HMAC/AEAD encryption, real role checks, and real AWS Bedrock Nova API calls—zero simulated sleep timers.
+        <strong>What to Click:</strong> Press <strong>"⚡ Run Live Lambda + Bedrock Benchmark"</strong> on the top right to execute a fresh 600-event + live Bedrock audit benchmark directly inside AWS Lambda and inspect the raw JSON output on the left.
+      </div>
       <div class="sim-header">
         <div>
           <h3 class="sim-title">Measured Storage Throughput, Opt-Out Isolation &amp; Deletion SLA Benchmark Suite</h3>
@@ -1512,72 +2197,22 @@
     </section>
   </main>
 
-  <!-- 05. WHY IT WINS -->
-  <section id="why-it-wins" class="section">
-    <div class="container">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">05 · Why It Wins (Architectural Trade-Offs)</h2>
-          <p class="section-desc">
-            Comparing VaultLineage's per-tenant KMS crypto-shredding &amp; SQLite lineage DAG against conventional AI data-lake architectures.
-          </p>
-        </div>
-        <span class="tag tag-accent">Zero-Serverless Footprint (No EC2 / RDS / GPU)</span>
+  <div class="container">
+    <footer class="footer">
+      <div>
+        <strong>VaultLineage v1.0</strong> · Serverless AWS CloudFront + Private S3 (OAC) + Python 3.12 SQLite Lambda + Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)
       </div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Architecture Pattern</th>
-              <th>Tenant Encryption Isolation</th>
-              <th>Real-Time ML Opt-Out Enforcement</th>
-              <th>GDPR / CCPA Deletion Across ML Shards</th>
-              <th>Audit &amp; Compliance Proof</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>1. Naive Append-Only Object Lake + Ad-Hoc Row Deletes</strong></td>
-              <td>Single shared bucket KMS key; cross-tenant read blast radius</td>
-              <td>Delayed batch sync; high risk of opted-out leakage into SFT shards</td>
-              <td>Requires rewriting multi-TB Parquet archives; misses downstream LoRA copies</td>
-              <td>Unstructured application logs; no cryptographic proof</td>
-            </tr>
-            <tr>
-              <td><strong>2. Coarse DB Table ACLs Without PII Token Vault</strong></td>
-              <td>Table-level encryption only; raw PII exposed to ML scientists</td>
-              <td>Manual SQL <code>WHERE</code> filters prone to scientist query bugs</td>
-              <td>Deletes primary rows while feature-store embeddings retain memorized PII</td>
-              <td>No Merkle or HMAC deletion certificate</td>
-            </tr>
-            <tr class="winner-row">
-              <td><strong>3. VaultLineage (Per-Tenant KMS DEKs + SQLite Lineage Gate + Bedrock Auditor)</strong></td>
-              <td><strong>Dedicated 256-bit DEK per tenant</strong> + cross-tenant AAD + dual raw/PII-tokenized envelopes</td>
-              <td><strong>0.0% leakage (0/1,200)</strong>; instant SQLite shard eviction + role × purpose <code>403</code> gate (<code>0.028 ms</code> p50)</td>
-              <td><strong>Irreversible DEK zeroization + 100% SQLite shard &amp; snapshot re-compaction in <code>2.805 ms</code></strong></td>
-              <td><strong>1,374/1,374 SHA-256 hash-chained entries + HMAC Deletion Cert + Live Bedrock Nova Memo</strong></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="mono" style="font-size:0.74rem;">
+        <a href="https://d3bfhuibgzllcf.cloudfront.net" target="_blank" rel="noopener" style="color:var(--ink);">AgentGuard</a> ·
+        <a href="https://d2gltlwyzbnbxr.cloudfront.net" target="_blank" rel="noopener" style="color:var(--ink);">QuickSpaces</a> ·
+        <a href="https://github.com/ritwikareddykancharla/vault-lineage-storage" target="_blank" rel="noopener" style="color:var(--ink);">GitHub</a>
       </div>
-
-      <footer class="footer">
-        <div>
-          <strong>VaultLineage v1.0</strong> · Serverless AWS CloudFront + Private S3 (OAC) + Python 3.12 SQLite Lambda + Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)
-        </div>
-        <div class="mono" style="font-size:0.74rem;">
-          <a href="https://d3bfhuibgzllcf.cloudfront.net" target="_blank" rel="noopener" style="color:var(--ink);">AgentGuard</a> ·
-          <a href="https://d2gltlwyzbnbxr.cloudfront.net" target="_blank" rel="noopener" style="color:var(--ink);">QuickSpaces</a> ·
-          <a href="https://github.com/ritwikareddykancharla/vault-lineage-storage" target="_blank" rel="noopener" style="color:var(--ink);">GitHub</a>
-        </div>
-      </footer>
-    </div>
-  </section>
+    </footer>
+  </div>
 
   <script>
     // =========================================================================
-    // ZERO-LOCALSTORAGE URL HASH THEME & TAB ROUTING
+    // STATELESS URL HASH THEME & TAB ROUTING
     // =========================================================================
     const VALID_TABS = ['ingest-consent', 'ml-snapshot', 'rtbf-delete', 'benchmarks'];
     let activeTab = 'ingest-consent';
@@ -2317,11 +2952,236 @@
       renderBenchmarksPanel(appState && appState.benchmarks ? appState.benchmarks : VERIFIED_BENCHMARKS);
     }
 
+    // =========================================================================
+    // INTERACTIVE SYSTEM ARCHITECTURE INSPECTOR, ZOOM & STICKY TOC SCROLL-SPY
+    // =========================================================================
+    const ARCH_NODE_DETAILS = {
+      'edge-browser': {
+        plane: 'Plane ① · AWS Edge Delivery',
+        title: 'User Browser (4-Tab Compliance Studio & Sticky TOC)',
+        module: 'web/index.html (Stateless Hash-Routed UI)',
+        plain: 'Lets operators test PII ingestion, live ML opt-out toggles, role-scoped dataset builds, and GDPR crypto-shredding directly in the browser.',
+        hood: 'Zero external JS dependencies; persists active studio tab and dark/light theme exclusively via window.location.hash.',
+        metric: '4 Interactive Sandboxes · Stateless Hash Routing'
+      },
+      'edge-cloudfront': {
+        plane: 'Plane ① · AWS Edge Delivery',
+        title: 'Amazon CloudFront Global Edge Distribution (E8F0BH3Z2RT5V)',
+        module: 'infra/deploy_cloudfront.sh · HTTPS TLS 1.3 + OAC',
+        plain: 'Serves the web studio globally over HTTPS and routes dynamic /api/* calls straight to the Python 3.12 Lambda backend on the same origin.',
+        hood: 'Uses SigV4 Origin Access Control (OAC) to read static assets from private S3 while forwarding /api/* POST/GET requests with zero CORS overhead.',
+        metric: 'Distribution E8F0BH3Z2RT5V · 100% HTTPS + OAC'
+      },
+      'edge-s3': {
+        plane: 'Plane ① · AWS Edge Delivery',
+        title: 'Private Amazon S3 Bucket (BlockPublicAccess)',
+        module: 's3://vaultlineage-web-796330847946-us-west-2/index.html',
+        plain: 'Holds the static studio bundle privately so nobody can bypass CloudFront to fetch bucket objects directly.',
+        hood: 'All 4 S3 BlockPublicAccess flags enabled; IAM bucket policy restricts s3:GetObject strictly to CloudFront distribution E8F0BH3Z2RT5V.',
+        metric: '0 Public ACLs · $0 Idle Storage Compute'
+      },
+      'edge-lambda': {
+        plane: 'Plane ① · AWS Edge Delivery',
+        title: 'AWS Lambda Python 3.12 Storage & Compliance Router',
+        module: 'vault_lineage/server.py (lambda_handler)',
+        plain: 'Serverless API engine handling event ingestion, consent flips, ML snapshot builds, GDPR deletion, and live benchmarks on demand.',
+        hood: 'Routes /api/events/ingest, /api/consent/update, /api/training/build-snapshot, /api/compliance/delete-tenant, and /api/benchmarks/run.',
+        metric: 'Python 3.12 Serverless · 0 EC2 / 0 RDS Instances'
+      },
+      'pii-vault': {
+        plane: 'Plane ② · VPC PII Vault & KMS Storage',
+        title: 'Deterministic VPC PII Tokenizer (6 Sensitive Classes)',
+        module: 'vault_lineage/storage_engine.py :: tokenize_pii_spans()',
+        plain: 'Replaces emails, credit cards, SSNs, phone numbers, IPs, and AWS keys with consistent tenant-scoped tokens before data ever hits disk.',
+        hood: 'Computes HMAC-SHA256(tenant_salt, match)[:8] -> <PII:TYPE:digest>; tokenized 1,800 PII spans across 1,200 benchmark events with 0 raw PII leaks.',
+        metric: '1,800 PII Spans Tokenized · 0 Raw PII Leaks'
+      },
+      'kms-keyring': {
+        plane: 'Plane ② · VPC PII Vault & KMS Storage',
+        title: 'Per-Tenant KMS Envelope Keyring (KMS-AEAD-256)',
+        module: 'vault_lineage/storage_engine.py :: KmsEnvelopeKeyring',
+        plain: 'Assigns every enterprise customer its own 256-bit Data Encryption Key so one tenant can never decrypt another tenant or survive key destruction.',
+        hood: 'Seals dual raw + sanitized envelopes via SHA256-CTR + HMAC-SHA256 bound to AAD = tenant_id|event_id|cmk_arn at 5,182.4 events/sec (0.164 ms p50 / 0.27 ms p95).',
+        metric: '5,182.4 events/sec · 0.164 ms p50 Seal Latency'
+      },
+      'sqlite-wal': {
+        plane: 'Plane ② · VPC PII Vault & KMS Storage',
+        title: 'SQLite WAL Dual-Envelope Event Partitions',
+        module: 'vault_lineage/storage_engine.py :: encrypted_events + tenants',
+        plain: 'Stores both auditor-only raw envelopes and ML-safe tokenized envelopes in indexed relational partitions with relational lineage tracking.',
+        hood: 'Runs SQLite in Write-Ahead Logging (WAL) mode with composite index idx_events_tenant_status across 1,200 benchmarked events and 20 tenants.',
+        metric: '1,200 Events · 20 Tenants · Dual AEAD Envelopes'
+      },
+      'consent-pipeline': {
+        plane: 'Plane ③ · Real-Time Consent & Purpose Gate',
+        title: 'Live Consent Registry, Purpose ACL & ML Snapshot Builder',
+        module: 'vault_lineage/storage_engine.py :: build_training_snapshot()',
+        plain: 'Checks the caller role and each tenant\'s live AI training consent at snapshot-build time so opted-out customer data never enters model training.',
+        hood: 'Authorizes role × purpose in 0.028 ms p50 (170/170 unauthorized probes blocked) and runs SQLite JOIN snapshot builds in 15.09 ms (600 admitted / 600 blocked).',
+        metric: '0.0% Opt-Out Leakage (0/1,200) · 0.028 ms p50 ACL'
+      },
+      'crypto-shred': {
+        plane: 'Plane ④ · Right-to-Delete & Downstream Purge',
+        title: 'GDPR Art. 17 / CCPA Crypto-Shredding & Lineage Cascade',
+        module: 'vault_lineage/storage_engine.py :: delete_tenant_rtbf()',
+        plain: 'Permanently destroys a tenant\'s encryption key in memory and scrubs every downstream feature shard and historical training snapshot.',
+        hood: 'Zeroizes 256-bit CMK/DEK bytearrays (0x00), locks 180/180 ciphertexts (100% undecipherable), and re-compacts downstream SQLite manifests in 2.805 ms mean.',
+        metric: '2.805 ms Mean Purge · 180/180 Locked · 0 Residual'
+      },
+      'bedrock-audit': {
+        plane: 'Plane ⑤ · Compliance Attestation & Audit Plane',
+        title: 'Amazon Bedrock Nova Live Compliance Auditor',
+        module: 'vault_lineage/storage_engine.py :: us.amazon.nova-lite-v1:0',
+        plain: 'Generates a human-readable regulatory erasure memo citing exact destroyed DEK IDs, purged shard counts, and re-sealed SHA-256 digests.',
+        hood: 'Calls AWS Bedrock Converse API (us.amazon.nova-lite-v1:0) live on RTBF execution; measured 2,923.03 ms p50 across 3 live audits (2,643 total tokens).',
+        metric: 'Live us.amazon.nova-lite-v1:0 · 2,923.03 ms p50'
+      },
+      'hash-ledger': {
+        plane: 'Plane ⑤ · Compliance Attestation & Audit Plane',
+        title: 'Immutable SHA-256 Hash-Chained Ledger & Deletion Certificate',
+        module: 'vault_lineage/storage_engine.py :: verify_audit_chain()',
+        plain: 'Links every ingest, consent toggle, access check, and deletion into a cryptographic chain where altering any past record breaks the hash.',
+        hood: 'Computes entry_hash = SHA256(prev_hash || seq || action || payload) across all SQLite mutations plus HMAC-SHA256 signed Deletion Certificates.',
+        metric: '1,374 / 1,374 SHA-256 Chain Entries Verified'
+      }
+    };
+
+    function selectArchNode(nodeId) {
+      const info = ARCH_NODE_DETAILS[nodeId] || ARCH_NODE_DETAILS['consent-pipeline'];
+      document.querySelectorAll('#vaultArchSvg .ex-node').forEach(el => {
+        el.classList.toggle('selected', el.getAttribute('data-arch-node') === nodeId);
+      });
+      document.querySelectorAll('#archNodePills [data-arch-btn]').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-arch-btn') === nodeId);
+      });
+      const detailBox = document.getElementById('archInspectorDetail');
+      if (detailBox) {
+        detailBox.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.75rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+            <div>
+              <span class="tag tag-accent-soft" style="margin-bottom:0.35rem;">${escapeHtml(info.plane)}</span>
+              <h3 style="font-size:1.06rem; font-weight:800;">${escapeHtml(info.title)}</h3>
+            </div>
+            <span class="tag tag-pass">${escapeHtml(info.metric)}</span>
+          </div>
+          <div class="mono" style="font-size:0.73rem; color:var(--accent-main); margin-bottom:0.55rem;">Module / Resource: <code>${escapeHtml(info.module)}</code></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+            <div class="layer-plain"><strong>Plain English:</strong> ${escapeHtml(info.plain)}</div>
+            <div class="layer-hood"><strong>Under the Hood:</strong> ${escapeHtml(info.hood)}</div>
+          </div>
+        `;
+      }
+    }
+
+    document.querySelectorAll('#vaultArchSvg .ex-node').forEach(el => {
+      el.addEventListener('click', () => selectArchNode(el.getAttribute('data-arch-node')));
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          selectArchNode(el.getAttribute('data-arch-node'));
+        }
+      });
+    });
+    document.querySelectorAll('#archNodePills [data-arch-btn]').forEach(btn => {
+      btn.addEventListener('click', () => selectArchNode(btn.getAttribute('data-arch-btn')));
+    });
+
+    const archSvgEl = document.getElementById('vaultArchSvg');
+    const archViewportEl = document.getElementById('archViewport');
+    const zoom100Btn = document.getElementById('zoom100Btn');
+    const zoom125Btn = document.getElementById('zoom125Btn');
+    const zoomResetBtn = document.getElementById('zoomResetBtn');
+    const archZoomLabel = document.getElementById('archZoomLabel');
+
+    function setArchZoom(mode) {
+      if (!archSvgEl) return;
+      const is125 = mode === '125';
+      archSvgEl.classList.toggle('zoom-125', is125);
+      if (archZoomLabel) archZoomLabel.textContent = is125 ? 'Zoom: 125%' : 'Zoom: 100%';
+      if (zoom100Btn) zoom100Btn.className = is125 ? 'btn btn-secondary btn-sm' : 'btn btn-accent btn-sm';
+      if (zoom125Btn) zoom125Btn.className = is125 ? 'btn btn-accent btn-sm' : 'btn btn-secondary btn-sm';
+      if (mode === 'reset' && archViewportEl) {
+        archViewportEl.scrollTo({ left: 0, behavior: 'smooth' });
+        selectArchNode('consent-pipeline');
+      }
+    }
+    if (zoom100Btn) zoom100Btn.addEventListener('click', () => setArchZoom('100'));
+    if (zoom125Btn) zoom125Btn.addEventListener('click', () => setArchZoom('125'));
+    if (zoomResetBtn) zoomResetBtn.addEventListener('click', () => setArchZoom('reset'));
+
+    const dlArchBtn = document.getElementById('downloadArchSvgBtn');
+    if (dlArchBtn && archSvgEl) {
+      dlArchBtn.addEventListener('click', () => {
+        const xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + archSvgEl.outerHTML;
+        const blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'vaultlineage-system-architecture.svg';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
+    }
+
+    // Sticky Topbar Offset & Scroll-Spy Active Highlighting
+    const topHeaderEl = document.getElementById('topHeader');
+    const stickyTocEl = document.getElementById('stickyToc');
+    function syncTopbarHeight() {
+      if (!topHeaderEl) return;
+      document.documentElement.style.setProperty('--topbar-h', Math.ceil(topHeaderEl.getBoundingClientRect().height) + 'px');
+    }
+    syncTopbarHeight();
+    window.addEventListener('resize', syncTopbarHeight, { passive: true });
+    if (window.ResizeObserver && topHeaderEl) {
+      new ResizeObserver(syncTopbarHeight).observe(topHeaderEl);
+    }
+
+    const SPY_IDS = ['problem-statement', 'architecture', 'implementation', 'design-tradeoffs', 'studio-tabs'];
+    function setActiveToc(secKey) {
+      document.querySelectorAll('[data-toc-sec]').forEach(link => {
+        link.classList.toggle('active', link.getAttribute('data-toc-sec') === secKey);
+      });
+    }
+
+    function updateTocOnScroll() {
+      const topH = topHeaderEl ? topHeaderEl.getBoundingClientRect().height : 56;
+      const tocH = stickyTocEl ? stickyTocEl.getBoundingClientRect().height : 44;
+      const trigger = topH + tocH + 56;
+      let cur = 'problem-statement';
+      for (const id of SPY_IDS) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= trigger) {
+          cur = id;
+        }
+      }
+      if (cur === 'studio-tabs' && activeTab === 'benchmarks') {
+        setActiveToc('benchmarks-sec');
+      } else {
+        setActiveToc(cur);
+      }
+    }
+    window.addEventListener('scroll', updateTocOnScroll, { passive: true });
+
+    const tocBenchLink = document.getElementById('tocBenchmarksLink');
+    if (tocBenchLink) {
+      tocBenchLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchTab('benchmarks');
+        const st = document.getElementById('studio-tabs');
+        if (st) st.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setActiveToc('benchmarks-sec');
+      });
+    }
+
     // Boot Studio
+    selectArchNode('consent-pipeline');
     parseHashState();
     applyTheme(activeTheme);
     switchTab(activeTab);
     renderBenchmarksPanel(VERIFIED_BENCHMARKS);
+    updateTocOnScroll();
     probeHealth();
     refreshState();
   </script>
