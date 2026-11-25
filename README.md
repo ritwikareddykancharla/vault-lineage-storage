@@ -1,7 +1,7 @@
 # VaultLineage — Envelope-Encrypted AI Event Store, ML Opt-Out Gate & Crypto-Shred Deletion Engine
 
-**Live Production App (Amazon CloudFront + Private S3 OAC + Python 3.12 SQLite Lambda + Bedrock Nova):** https://dg5z1ay0effrd.cloudfront.net  
-**CloudFront Distribution ID:** `E8F0BH3Z2RT5V` (`/*` → Private S3 `vaultlineage-web-796330847946-us-west-2` via OAC · `/api/*` → Python 3.12 Lambda `vaultlineage-api-origin`)  
+**Live Production App (Amazon CloudFront + Private S3 OAC + AWS Lambda + SQLite WAL + Bedrock Nova):** https://dg5z1ay0effrd.cloudfront.net  
+**CloudFront Distribution ID:** `E8F0BH3Z2RT5V` (`/*` → Private S3 `vaultlineage-web-796330847946-us-west-2` via OAC · `/api/*` → AWS Lambda `vaultlineage-api-origin`)  
 **Live Health Endpoint:** `https://dg5z1ay0effrd.cloudfront.net/api/health`
 
 ---
@@ -59,7 +59,7 @@ All figures below were measured directly via `time.perf_counter()` by running `b
 
 - **Cryptographic O(1) Erasure + Deterministic Lineage Re-Compaction**: Instead of rewriting multi-terabyte raw object archives synchronously on every GDPR/CCPA request, zeroizing the per-tenant 256-bit DEK renders historical ciphertexts permanently undecipherable in `2.805 ms` mean while SQLite lineage tracking purges `100.0%` of downstream feature and SFT manifests.
 - **Defense-in-Depth Separation of Duties**: Even an authorized `ml_scientist` building `ml_foundation_training` shards only decrypts the `sanitized_envelope` (`<PII:EMAIL:...>`), never the auditor-only `raw_envelope`.
-- **100% Serverless Footprint**: Zero EC2, RDS, or idle GPU instances—delivered globally via CloudFront + private S3 (OAC) + Python 3.12 Lambda + on-demand Amazon Bedrock Nova.
+- **100% Serverless Footprint**: Zero EC2, RDS, or idle GPU instances—delivered globally via CloudFront + private S3 (OAC) + AWS Lambda + on-demand Amazon Bedrock Nova.
 
 ---
 
@@ -78,6 +78,6 @@ PYTHONPATH=. python3 benchmarks/run_benchmarks.py
 PYTHONPATH=. python3 -m vault_lineage.server
 # -> Open http://localhost:3098
 
-# 4. Deploy serverless stack to AWS CloudFront + S3 (OAC) + Python 3.12 Lambda
+# 4. Deploy serverless stack to AWS CloudFront + S3 (OAC) + AWS Lambda
 ./infra/deploy_cloudfront.sh
 ```

@@ -1182,7 +1182,7 @@
           <span class="section-kicker">02 · Architecture</span>
           <h2 class="section-title">Architecture</h2>
           <p class="section-desc">
-            Serverless storage, consent enforcement, key destruction, and audit topology across CloudFront, private S3, Python 3.12 Lambda, SQLite WAL, and Amazon Bedrock. <strong>Click any component below to inspect its contract.</strong>
+            Serverless storage, consent enforcement, key destruction, and audit topology across CloudFront, private S3, AWS Lambda, SQLite WAL, and Amazon Bedrock. <strong>Click any component below to inspect its contract.</strong>
           </p>
         </div>
         <button type="button" class="btn btn-secondary" onclick="resetDemoState()">↺ Reset Live Engine State</button>
@@ -1262,12 +1262,12 @@
             <text x="775" y="81" text-anchor="middle" class="ex-mono" font-size="9.5" fill="#15803D">web/index.html · BlockPublicAccess</text>
           </g>
 
-          <!-- Node 3b: AWS Lambda (Python 3.12) -->
+          <!-- Node 3b: AWS Lambda -->
           <g class="ex-node" data-arch-node="edge-lambda" tabindex="0">
             <path d="M 640,102 Q 775,99 910,103 Q 913,130 909,156 Q 774,159 641,155 Q 637,129 640,102 Z" fill="#FFE8D6" />
             <path class="ex-stroke-main" d="M 640,102 Q 775,99 910,103 Q 913,130 909,156 Q 774,159 641,155 Q 637,129 640,102 Z" fill="none" stroke="#18181B" stroke-width="2" />
             <path d="M 642,104 Q 776,102 908,105 Q 910,130 907,154 Q 773,156 643,153 Z" fill="none" stroke="#18181B" stroke-width="1" opacity="0.6" />
-            <text x="775" y="125" text-anchor="middle" class="ex-hand" font-size="20" font-weight="700" fill="#18181B">AWS Lambda (Python 3.12)</text>
+            <text x="775" y="125" text-anchor="middle" class="ex-hand" font-size="20" font-weight="700" fill="#18181B">AWS Lambda</text>
             <text x="775" y="144" text-anchor="middle" class="ex-mono" font-size="9.5" fill="#9A3412">vault_lineage/server.py · REST Router</text>
           </g>
 
@@ -1464,7 +1464,7 @@
           <button type="button" class="arch-node-pill" data-arch-btn="edge-browser">1. User Browser</button>
           <button type="button" class="arch-node-pill" data-arch-btn="edge-cloudfront">2. CloudFront Edge</button>
           <button type="button" class="arch-node-pill" data-arch-btn="edge-s3">3. Private S3 (OAC)</button>
-          <button type="button" class="arch-node-pill" data-arch-btn="edge-lambda">4. Python 3.12 Lambda</button>
+          <button type="button" class="arch-node-pill" data-arch-btn="edge-lambda">4. AWS Lambda</button>
           <button type="button" class="arch-node-pill" data-arch-btn="pii-vault">5. VPC PII Vault</button>
           <button type="button" class="arch-node-pill" data-arch-btn="kms-keyring">6. KMS DEK Keyring</button>
           <button type="button" class="arch-node-pill" data-arch-btn="sqlite-wal">7. SQLite WAL Store</button>
@@ -1661,7 +1661,7 @@
           <span class="step-badge">TRADE-OFF 03 · DETERMINISTIC + LLM</span>
           <h3 style="font-size:1.02rem; font-weight:800; margin-bottom:0.45rem;">Code Enforces Deletion; Bedrock Drafts the Audit Memo</h3>
           <p style="font-size:0.87rem; color:var(--ink-muted);">
-            Access checks and key destruction run deterministically in Python and SQLite first (<code>100.0%</code> ACL and shred enforcement); <code>us.amazon.nova-lite-v1:0</code> is invoked only afterward to summarize verified SHA-256 deletion digests for auditors.
+            Access checks and key destruction run deterministically in SQLite and policy code first (<code>100.0%</code> ACL and shred enforcement); <code>us.amazon.nova-lite-v1:0</code> is invoked only afterward to summarize verified SHA-256 deletion digests for auditors.
           </p>
         </div>
       </div>
@@ -1675,7 +1675,7 @@
         <span class="section-kicker">05 · Live Demo</span>
         <h2 class="section-title">Live Demo</h2>
         <p class="section-desc">
-          Each tab sends live HTTP requests to the Python 3.12 Lambda, SQLite WAL, and Amazon Bedrock backend.
+          Each tab sends live HTTP requests to the AWS Lambda, SQLite WAL, and Amazon Bedrock backend.
         </p>
       </div>
       <button type="button" class="btn btn-secondary btn-sm" onclick="resetDemoState()">↺ Reset All 5 Tenants</button>
@@ -2942,7 +2942,7 @@
         plane: 'Plane ① · AWS Edge Delivery',
         title: 'Amazon CloudFront Global Edge Distribution (E8F0BH3Z2RT5V)',
         module: 'infra/deploy_cloudfront.sh · HTTPS TLS 1.3 + OAC',
-        plain: 'Serves the web studio globally over HTTPS and routes dynamic /api/* calls straight to the Python 3.12 Lambda backend on the same origin.',
+        plain: 'Serves the web studio globally over HTTPS and routes dynamic /api/* calls straight to the AWS Lambda backend on the same origin.',
         hood: 'Uses SigV4 Origin Access Control (OAC) to read static assets from private S3 while forwarding /api/* POST/GET requests with zero CORS overhead.',
         metric: 'Distribution E8F0BH3Z2RT5V · 100% HTTPS + OAC'
       },
@@ -2956,11 +2956,11 @@
       },
       'edge-lambda': {
         plane: 'Plane ① · AWS Edge Delivery',
-        title: 'AWS Lambda Python 3.12 Storage & Compliance Router',
+        title: 'AWS Lambda Storage & Compliance Router',
         module: 'vault_lineage/server.py (lambda_handler)',
         plain: 'Serverless API engine handling event ingestion, consent flips, ML snapshot builds, GDPR deletion, and live benchmarks on demand.',
         hood: 'Routes /api/events/ingest, /api/consent/update, /api/training/build-snapshot, /api/compliance/delete-tenant, and /api/benchmarks/run.',
-        metric: 'Python 3.12 Serverless · 0 EC2 / 0 RDS Instances'
+        metric: 'AWS Lambda Serverless · 0 EC2 / 0 RDS Instances'
       },
       'pii-vault': {
         plane: 'Plane ② · VPC PII Vault & KMS Storage',
