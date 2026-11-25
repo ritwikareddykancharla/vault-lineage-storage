@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VaultLineage — Envelope-Encrypted AI Event Store, ML Opt-Out Gate &amp; Crypto-Shred Deletion Engine</title>
-  <meta name="description" content="Serverless AWS Applied AI Customer Content Storage &amp; Compliance Platform: SQLite WAL + Per-Tenant KMS Envelope Encryption (5,182.4 ev/s), Real-Time ML Opt-Out Gate (0.0% leakage across 1,200 events), Purpose-Bound Access Control (0.028 ms p50), and GDPR/CCPA Crypto-Shredding (2.805 ms) with Live Amazon Bedrock Nova Audit." />
+  <title>VaultLineage: Encrypted AI Data Storage With Instant Customer Opt-Out and Right-to-Delete</title>
+  <meta name="description" content="VaultLineage encrypts each customer's AI events with a dedicated key, strips personal identifiers on arrival, enforces real-time training opt-outs, and executes right-to-delete in milliseconds." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;family=Kalam:wght@400;700&amp;family=Martian+Mono:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
@@ -518,33 +518,24 @@
       margin-bottom: 1.2rem;
     }
 
-    .headline-pills {
+    .hero-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.55rem;
+      gap: 0.6rem;
       margin-bottom: 1.3rem;
-    }
-
-    .headline-pill {
-      font-family: 'Martian Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.32rem 0.65rem;
-      background: var(--bg-obsidian);
-      color: #FAF7F2;
-      border: 2px solid var(--border);
-    }
-
-    .headline-pill span {
-      color: var(--accent-bright);
-      font-weight: 700;
     }
 
     .kpi-strip {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 1rem;
       margin-top: 1.1rem;
+    }
+    @media (max-width: 980px) {
+      .kpi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 580px) {
+      .kpi-strip { grid-template-columns: 1fr; }
     }
 
     .card {
@@ -1019,8 +1010,8 @@
   <header class="topbar" id="topHeader">
     <div class="container topbar-inner">
       <a href="#studio-tabs" class="brand">
-        <span class="brand-badge">VAULTLINEAGE v1.0</span>
-        <span>VaultLineage</span>
+        <span class="brand-badge">VAULTLINEAGE</span>
+        <span>Privacy-Safe AI Data Storage</span>
       </a>
       <nav class="nav-links" aria-label="Portfolio Links">
         <a class="nav-pill" href="https://d3bfhuibgzllcf.cloudfront.net" target="_blank" rel="noopener">AgentGuard ↗</a>
@@ -1037,15 +1028,15 @@
   </header>
 
   <!-- Sticky Jump-to-Section TOC -->
-  <nav class="toc-bar" id="stickyToc" aria-label="Jump to Section Table of Contents">
+  <nav class="toc-bar" id="stickyToc" aria-label="Section Navigation">
     <div class="container toc-inner">
-      <span class="toc-label">Jump To:</span>
-      <a class="toc-link active" href="#problem-statement" data-toc-sec="problem-statement">§01 · Problem Statement</a>
-      <a class="toc-link" href="#architecture" data-toc-sec="architecture">§02 · System Architecture</a>
-      <a class="toc-link" href="#implementation" data-toc-sec="implementation">§03 · Implementation</a>
-      <a class="toc-link" href="#design-tradeoffs" data-toc-sec="design-tradeoffs">§04 · Design Trade-Offs</a>
-      <a class="toc-link" href="#studio-tabs" data-toc-sec="studio-tabs">§05 · Interactive Studio</a>
-      <a class="toc-link" href="#studio-tabs" data-toc-sec="benchmarks-sec" id="tocBenchmarksLink">§06 · Benchmarks</a>
+      <span class="toc-label">Sections:</span>
+      <a class="toc-link active" href="#problem-statement" data-toc-sec="problem-statement">01 · Problem</a>
+      <a class="toc-link" href="#architecture" data-toc-sec="architecture">02 · Architecture</a>
+      <a class="toc-link" href="#implementation" data-toc-sec="implementation">03 · Implementation</a>
+      <a class="toc-link" href="#design-tradeoffs" data-toc-sec="design-tradeoffs">04 · Trade-Offs</a>
+      <a class="toc-link" href="#studio-tabs" data-toc-sec="studio-tabs">05 · Live Demo</a>
+      <a class="toc-link" href="#studio-tabs" data-toc-sec="benchmarks-sec" id="tocBenchmarksLink">06 · Benchmarks</a>
     </div>
   </nav>
 
@@ -1053,108 +1044,102 @@
   <section class="hero">
     <div class="container">
       <div class="hero-top-row">
-        <div class="eyebrow">🔐 AWS CloudFront + Private S3 (OAC) + Python 3.12 SQLite Lambda + Amazon Bedrock Nova</div>
+        <div class="eyebrow">Privacy-Safe AI Data Storage · Built for AWS Applied AI</div>
         <div class="runtime-pill" id="runtimeModeBadge">
           <span class="pulse-dot"></span>
-          <span id="runtimeModeText">Connecting to AWS CloudFront /api/health...</span>
+          <span id="runtimeModeText">Live on AWS · Powered by Amazon Bedrock</span>
         </div>
       </div>
 
-      <h1>VaultLineage — Envelope-Encrypted AI Event Store, ML Opt-Out Gate &amp; Crypto-Shred Deletion Engine</h1>
+      <h1>VaultLineage: Encrypted AI Data Storage With Instant Customer Opt-Out and Right-to-Delete</h1>
       <p class="hero-sub">
-        Serverless customer-content storage &amp; compliance infrastructure for <strong>AWS Applied AI Core Services</strong>: uniting
-        <strong>SQLite WAL Event Partitions</strong>, <strong>Per-Tenant KMS Envelope Encryption</strong>,
-        <strong>Deterministic VPC PII Tokenization</strong>, <strong>Real-Time Customer AI Training Opt-Out Gates</strong>,
-        and <strong>GDPR Art. 17 / CCPA Cryptographic Right-to-Delete (<code>RTBF</code>)</strong> with downstream shard purge &amp; live
-        <strong>Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)</strong> compliance auditing.
+        Customers send sensitive records to AI tools every day and expect instant opt-outs from model training plus complete deletion on request. VaultLineage encrypts each tenant's data with its own key, strips personal identifiers on arrival, excludes opted-out records from training sets, and erases data in milliseconds.
       </p>
 
-      <div class="headline-pills">
-        <div class="headline-pill"><span>0.0%</span> Opt-Out Leakage (0 / 1,200 SQLite Events)</div>
-        <div class="headline-pill"><span>5,182.4 ev/s</span> Envelope Seal + SQLite WAL Ingest (0.164 ms p50)</div>
-        <div class="headline-pill"><span>2.805 ms</span> Mean Crypto-Shred + SQLite Lineage Purge</div>
-        <div class="headline-pill"><span>1,374 / 1,374</span> SHA-256 Hash-Chained Audit Entries Verified</div>
+      <div class="hero-actions">
+        <a class="btn btn-accent" href="#studio-tabs" onclick="switchTab('ingest-consent')">▶ Try the Live Demo ↓</a>
+        <a class="btn btn-secondary" href="#architecture">See How It Works ↓</a>
+        <a class="btn btn-secondary" href="#studio-tabs" onclick="switchTab('benchmarks')">View Test Results ↓</a>
       </div>
 
       <div class="kpi-strip">
         <div class="card kpi-card">
-          <div class="kpi-val" id="kpiLeakVal">0.0%</div>
-          <div class="kpi-label">Opted-Out Tenant Leakage in ML Shards</div>
-          <div class="kpi-sub" id="kpiLeakSub">0 / 1,200 benchmark events · 1,800 PII spans tokenized (0 leaks)</div>
+          <div class="kpi-val" id="kpiLeakVal">0 / 1,200</div>
+          <div class="kpi-label">Opt-Out Leaks in Training Sets</div>
+          <div class="kpi-sub" id="kpiLeakSub">Customer data marked "do not train" never enters ML snapshots (1,800 PII spans tokenized)</div>
         </div>
         <div class="card kpi-card">
-          <div class="kpi-val" id="kpiPurgeVal">100.0%</div>
-          <div class="kpi-label">Downstream Shard Lineage Purge on Delete</div>
-          <div class="kpi-sub" id="kpiPurgeSub">0 residual records · 2.805 ms mean SQLite + DEK cascade</div>
+          <div class="kpi-val" id="kpiPurgeVal">2.805 ms</div>
+          <div class="kpi-label">Instant Right-to-Delete</div>
+          <div class="kpi-sub" id="kpiPurgeSub">Destroys the tenant's encryption key and purges 100.0% of downstream training shards (0 residual rows)</div>
         </div>
         <div class="card kpi-card">
-          <div class="kpi-val" id="kpiCryptoVal">KMS-AEAD-256</div>
-          <div class="kpi-label">Per-Tenant DEK Crypto-Shredding</div>
-          <div class="kpi-sub" id="kpiCryptoSub">5,182.4 ev/s ingest (0.164 ms p50) · 180/180 shredded locked</div>
+          <div class="kpi-val" id="kpiCryptoVal">5,182.4 ev/s</div>
+          <div class="kpi-label">Encrypted &amp; Redacted Ingest</div>
+          <div class="kpi-sub" id="kpiCryptoSub">0.164 ms median seal latency · 180 / 180 deleted envelopes locked</div>
         </div>
         <div class="card kpi-card">
           <div class="kpi-val" id="kpiAuthVal">0.028 ms</div>
-          <div class="kpi-label">Purpose-Bound Access Authorization (p50)</div>
-          <div class="kpi-sub" id="kpiAuthSub">0.039 ms p95 (300 probes) · 170/170 unauthorized blocked (100%)</div>
+          <div class="kpi-label">Purpose-Bound Access Check</div>
+          <div class="kpi-sub" id="kpiAuthSub">170 / 170 unauthorized probes blocked (100.0%) · 1,374 audit entries verified</div>
         </div>
       </div>
 
       <div class="pipeline-bar" role="region" aria-label="VaultLineage Lifecycle Architecture Flow">
-        <div class="pipe-step"><span class="pipe-num">01</span> KMS Envelope Ingest + PII Vault</div>
+        <div class="pipe-step"><span class="pipe-num">01</span> Strip PII &amp; Encrypt Per Tenant</div>
         <span class="pipe-arrow">→</span>
-        <div class="pipe-step"><span class="pipe-num">02</span> SQLite Live Consent Gate</div>
+        <div class="pipe-step"><span class="pipe-num">02</span> Track Live Training Consent</div>
         <span class="pipe-arrow">→</span>
-        <div class="pipe-step"><span class="pipe-num">03</span> Purpose-Bound ML Snapshot Builder</div>
+        <div class="pipe-step"><span class="pipe-num">03</span> Filter Training Sets by Purpose</div>
         <span class="pipe-arrow">→</span>
-        <div class="pipe-step"><span class="pipe-num">04</span> Crypto-Shred RTBF + Bedrock Nova Audit</div>
+        <div class="pipe-step"><span class="pipe-num">04</span> Shred Tenant Key &amp; Audit Deletion</div>
       </div>
     </div>
   </section>
 
-  <!-- §01 · PROBLEM STATEMENT -->
+  <!-- 01 · PROBLEM -->
   <section id="problem-statement" class="section">
     <div class="container">
       <div class="section-header">
         <div>
-          <span class="section-kicker">§01 · Problem Statement</span>
-          <h2 class="section-title">Why Applied AI Storage &amp; Compliance Pipelines Break Privacy SLAs</h2>
+          <span class="section-kicker">01 · Problem</span>
+          <h2 class="section-title">Problem</h2>
           <p class="section-desc">
-            Why Applied AI storage platforms break privacy &amp; compliance SLAs when customer prompts, opt-out toggles, and foundation-model training shards are decoupled.
+            Keeping customer prompts, AI training consent toggles, and downstream model snapshots synchronized across multi-tenant storage.
           </p>
         </div>
-        <span class="tag tag-accent">AWS Applied AI Core Storage Challenge</span>
+        <span class="tag tag-accent">Applied AI Data Storage</span>
       </div>
 
       <div class="plain-callout">
-        <div class="mono" style="font-size:0.72rem; font-weight:700; color:#15803D; text-transform:uppercase; margin-bottom:0.35rem;">💡 In Plain English — What Problem Does VaultLineage Solve?</div>
         <p style="margin-bottom:0.55rem;">
-          Imagine thousands of enterprise companies sending sensitive customer support chats, code snippets, and clinical notes to an AI platform every second. Some companies allow their anonymized prompts to improve future AI models, while hospitals and banks click <strong>"Opt Out of AI Training"</strong>—and months later, a European customer exercises their legal <strong>GDPR Right to Be Forgotten</strong> ("delete everything you ever stored about us").
+          Enterprise organizations send support chats, source code snippets, and clinical notes to AI platforms continuously. Some tenants permit anonymized prompts to improve future models, while banks and healthcare providers opt out of model training, and European customers periodically invoke GDPR right-to-delete requests.
         </p>
         <p>
-          In conventional data lakes, all prompts land in one giant shared bucket encrypted with a single master key, and nightly scripts copy files into ML training datasets. If a customer opts out at 2:00 PM, their morning prompts still slip into tonight's model training job; and if they demand legal deletion, engineers have to hunt down and rewrite terabytes of old dataset snapshots by hand. <strong>VaultLineage solves this at the storage layer itself</strong>: every tenant gets its own cryptographic key, sensitive PII is replaced with irreversible tokens before touching disk, ML dataset builds check live consent in SQLite (<code>0 / 1,200</code> leaks), and deleting a tenant destroys its encryption key plus purges every downstream ML shard in <strong><code>2.805 ms</code></strong>.
+          In a conventional data lake, all events land in a shared bucket under one master key while scheduled batch jobs copy records into training sets. When a customer opts out in the afternoon, prompts collected earlier that day still enter overnight training runs. When a customer requests legal deletion, teams must locate and rewrite historical dataset files manually. <strong>VaultLineage enforces isolation in the storage engine itself</strong>: each tenant gets its own 256-bit key, personal identifiers are replaced with irreversible tokens before writing to disk, training dataset queries check live consent in SQLite (<code>0 / 1,200</code> leaks), and tenant deletion zeroes the key and purges downstream shards in <strong><code>2.805 ms</code></strong>.
         </p>
       </div>
 
       <div class="grid-3">
         <div class="card">
-          <span class="step-badge">FAILURE MODE 01</span>
-          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.45rem;">Silent Opt-Out Drift into SFT Shards</h3>
+          <span class="step-badge">01 · OPT-OUT DRIFT</span>
+          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.45rem;">Opt-Out Prompts Slipping Into SFT Shards</h3>
           <p style="font-size:0.89rem; color:var(--ink-muted);">
-            Enterprise customers toggle AI training consent asynchronously, while nightly batch pipelines copy raw event logs into vector stores and SFT/LoRA manifests—leaking opted-out tenant prompts into model weights.
+            Enterprise customers toggle AI training consent asynchronously while batch pipelines copy raw event logs into vector stores and SFT/LoRA manifests, admitting opted-out prompts into model training.
           </p>
         </div>
         <div class="card">
-          <span class="step-badge">FAILURE MODE 02</span>
-          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.45rem;">Raw PII &amp; Over-Privileged Data Reads</h3>
+          <span class="step-badge">02 · EXPOSED IDENTIFIERS</span>
+          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.45rem;">Raw PII &amp; Over-Scoped Table Reads</h3>
           <p style="font-size:0.89rem; color:var(--ink-muted);">
-            Without pre-ingestion VPC PII tokenization and purpose-bound role gates, analytics engineers and ML training jobs read unredacted <code>SSN</code>, <code>EMAIL</code>, <code>CARD</code>, and <code>AKIA</code> credentials stored under a single shared bucket key.
+            Without pre-ingestion PII tokenization and purpose-bound role gates, analytics engineers and ML training jobs can read unredacted <code>SSN</code>, <code>EMAIL</code>, <code>CARD</code>, and <code>AKIA</code> credentials stored under one shared bucket key.
           </p>
         </div>
         <div class="card">
-          <span class="step-badge">FAILURE MODE 03</span>
-          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.45rem;">Unverifiable GDPR Art. 17 / CCPA Deletion</h3>
+          <span class="step-badge">03 · ORPHANED COPIES</span>
+          <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:0.45rem;">Incomplete GDPR Art. 17 &amp; CCPA Erasure</h3>
           <p style="font-size:0.89rem; color:var(--ink-muted);">
-            Deleting rows in a primary table leaves orphaned copies across append-only partitions, feature stores, and historical training snapshots—failing regulatory erasure audits with no cryptographic proof of destruction.
+            Deleting rows in a primary table leaves copies inside append-only partitions, feature stores, and historical training snapshots, with no cryptographic proof that deleted records are unreadable.
           </p>
         </div>
       </div>
@@ -1162,42 +1147,42 @@
       <div class="worked-example">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:0.75rem; flex-wrap:wrap;">
           <div>
-            <span class="step-badge" style="margin-bottom:0.3rem;">CONCRETE END-TO-END WORKED EXAMPLE</span>
-            <h3 style="font-size:1.12rem; font-weight:800;">Following One Real Customer Prompt From Ingestion to GDPR Crypto-Shredding</h3>
+            <span class="step-badge" style="margin-bottom:0.3rem;">WALKTHROUGH · TENANT LIFECYCLE</span>
+            <h3 style="font-size:1.12rem; font-weight:800;">Following One Customer Record From Ingestion to Key Destruction</h3>
           </div>
           <span class="tag tag-pass">Tenant: tenant-euro-nordic</span>
         </div>
         <div class="worked-steps">
           <div class="worked-step">
-            <strong style="color:#15803D;">Step 1 — Prompt Arrives with Raw Card &amp; Email (<code>0.164 ms p50</code>):</strong><br/>
-            Nordic Retail's CFO submits: <em>"Investigate wire mismatch for <code>hannah.lindqvist@nordicretail.de</code>, card <code>4532-7700-1188-9012</code>."</em> Before anything touches SQLite, the VPC PII Vault replaces both spans with tenant-salted HMAC tokens (<code>&lt;PII:EMAIL:8f1c02a9&gt;</code>, <code>&lt;PII:CREDIT_CARD:31b9e440&gt;</code>) and seals the event under Nordic Retail's dedicated 256-bit DEK at <strong><code>5,182.4 events/sec</code></strong>.
+            <strong style="color:#15803D;">1. Record Arrives With Card &amp; Email (<code>0.164 ms p50</code>):</strong><br/>
+            Nordic Retail submits: <em>"Investigate wire mismatch for <code>hannah.lindqvist@nordicretail.de</code>, card <code>4532-7700-1188-9012</code>."</em> Before writing to SQLite, the PII Vault replaces both spans with tenant-salted HMAC tokens (<code>&lt;PII:EMAIL:8f1c02a9&gt;</code>, <code>&lt;PII:CREDIT_CARD:31b9e440&gt;</code>) and seals the event under Nordic Retail's dedicated 256-bit DEK at <strong><code>5,182.4 events/sec</code></strong>.
           </div>
           <div class="worked-step">
-            <strong style="color:#15803D;">Step 2 — Customer Flips "Opt Out of ML Training":</strong><br/>
-            Ten minutes later, Nordic Retail's admin switches their policy from <code>ALLOW_ML_TRAINING</code> to <code>ANALYTICS_ONLY_OPTOUT_ML</code>. VaultLineage updates the live SQLite <code>tenants</code> registry and immediately evicts Nordic Retail's vectors from active streaming feature/LoRA shards—no waiting for a nightly cron job.
+            <strong style="color:#15803D;">2. Tenant Opts Out of Model Training:</strong><br/>
+            Ten minutes later, Nordic Retail switches its policy from <code>ALLOW_ML_TRAINING</code> to <code>ANALYTICS_ONLY_OPTOUT_ML</code>. VaultLineage updates the live SQLite <code>tenants</code> registry and evicts Nordic Retail's entries from active streaming feature and LoRA shards immediately.
           </div>
           <div class="worked-step">
-            <strong style="color:#15803D;">Step 3 — ML Scientist Builds an SFT Training Dataset (<code>15.09 ms</code>):</strong><br/>
-            An Applied AI scientist requests a foundation-model SFT snapshot. First, the Purpose-Bound ACL verifies <code>ml_scientist × ml_foundation_training</code> in <strong><code>0.028 ms p50</code></strong> (blocking unauthorized roles like <code>analytics_engineer</code> or <code>external_contractor</code> <code>170/170</code> times). Next, the SQLite <code>JOIN</code> automatically excludes Nordic Retail's opted-out events (<strong><code>0 / 1,200</code> opt-out leaks</strong>).
+            <strong style="color:#15803D;">3. Scientist Builds an SFT Training Set (<code>15.09 ms</code>):</strong><br/>
+            An ML scientist requests a foundation-model SFT snapshot. The purpose gate verifies <code>ml_scientist × ml_foundation_training</code> in <strong><code>0.028 ms p50</code></strong> (rejecting unauthorized roles such as <code>analytics_engineer</code> or <code>external_contractor</code> <code>170/170</code> times), and the SQLite <code>JOIN</code> excludes Nordic Retail's opted-out events (<strong><code>0 / 1,200</code> leaks</strong>).
           </div>
           <div class="worked-step">
-            <strong style="color:#15803D;">Step 4 — Customer Triggers GDPR Art. 17 Right-to-Delete (<code>2.805 ms</code>):</strong><br/>
-            Months later, Nordic Retail terminates its contract under GDPR Art. 17. VaultLineage overwrites Nordic Retail's 256-bit CMK/DEK bytes in memory with <code>0x00</code> (rendering <strong><code>180/180</code> historical ciphertexts permanently undecipherable</strong>), purges every downstream ML snapshot &amp; shard (<code>0</code> residual records), re-seals SHA-256 manifests, and calls live <strong>Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)</strong> to sign a legal compliance memo.
+            <strong style="color:#15803D;">4. Tenant Triggers GDPR Art. 17 Right-to-Delete (<code>2.805 ms</code>):</strong><br/>
+            When Nordic Retail requests erasure under GDPR Art. 17, VaultLineage overwrites its 256-bit CMK and DEK bytes in memory with <code>0x00</code> (locking <strong><code>180/180</code> historical ciphertexts</strong>), purges downstream ML snapshots and shards (<code>0</code> residual records), re-seals SHA-256 manifests, and calls <strong>Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)</strong> to draft the compliance memo.
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- §02 · SYSTEM ARCHITECTURE -->
+  <!-- 02 · ARCHITECTURE -->
   <section id="architecture" class="section">
     <div class="container">
       <div class="section-header">
         <div>
-          <span class="section-kicker">§02 · System Architecture</span>
-          <h2 class="section-title">End-to-End Multi-Plane Storage, Consent &amp; Crypto-Shredding Architecture</h2>
+          <span class="section-kicker">02 · Architecture</span>
+          <h2 class="section-title">Architecture</h2>
           <p class="section-desc">
-            100% serverless AWS topology (<code>CloudFront</code> → private <code>S3 OAC</code> + Python 3.12 <code>Lambda</code> + <code>SQLite WAL</code> + <code>Amazon Bedrock Nova</code>) with every stage metric measured in <code>benchmarks/latest_results.json</code>. <strong>Click any component below to inspect its contract.</strong>
+            Serverless storage, consent enforcement, key destruction, and audit topology across CloudFront, private S3, Python 3.12 Lambda, SQLite WAL, and Amazon Bedrock. <strong>Click any component below to inspect its contract.</strong>
           </p>
         </div>
         <button type="button" class="btn btn-secondary" onclick="resetDemoState()">↺ Reset Live Engine State</button>
@@ -1524,16 +1509,15 @@
     </div>
   </section>
 
-  <!-- §03 · IMPLEMENTATION -->
+  <!-- 03 · IMPLEMENTATION -->
   <section id="implementation" class="section">
-    <div id="what-i-implemented"></div>
     <div class="container">
       <div class="section-header">
         <div>
-          <span class="section-kicker">§03 · Implementation</span>
-          <h2 class="section-title">Core Storage, Keyring &amp; Lineage Modules (<code>vault_lineage/</code>)</h2>
+          <span class="section-kicker">03 · Implementation</span>
+          <h2 class="section-title">Implementation</h2>
           <p class="section-desc">
-            Every module pairs plain-English intuition with exact Python data structures, SQLite WAL queries, and cryptographic primitives implemented in <code>vault_lineage/storage_engine.py</code>, <code>server.py</code>, and <code>benchmarks.py</code>.
+            Core storage, keyring, tokenization, consent, and deletion modules in <code>vault_lineage/storage_engine.py</code>, <code>server.py</code>, and <code>benchmarks.py</code>.
           </p>
         </div>
         <span class="tag tag-pass">10 / 10 Unit Tests Passing (0.14s)</span>
@@ -1548,26 +1532,26 @@
           <div class="impl-body">
             <h3 style="font-size:1.08rem; font-weight:800;"><code>KmsEnvelopeKeyring</code> + Dual-Envelope SQLite WAL Partitions</h3>
             <div class="layer-plain">
-              <strong>Plain-English Intuition:</strong> Instead of locking every customer's files inside one shared vault, each company gets its own unique padlock and key—and we store two separate locked versions of each event: a redacted version for AI scientists and an original version strictly for security auditors.
+              Rather than encrypting all tenants under one shared bucket key, each customer organization receives a dedicated key, and each ingested event stores two separate encrypted envelopes: a redacted copy for ML workflows and a raw copy restricted to security auditors.
             </div>
             <div class="layer-hood">
-              <strong>Under the Hood (Crypto &amp; SQL):</strong> Mints a per-tenant 256-bit CMK wrapping secret and 256-bit Data Encryption Key (<code>DEK</code>). Seals <code>raw_envelope_json</code> and <code>sanitized_envelope_json</code> using <code>SHA256-CTR</code> keystream + <code>HMAC-SHA256</code> AEAD tag bound to Additional Authenticated Data <code>AAD = f"{tenant_id}|{event_id}|{cmk_arn}"</code> inside SQLite WAL (<code>PRAGMA journal_mode=WAL</code>, index <code>idx_events_tenant_status</code>) at <strong><code>5,182.4 events/sec</code></strong> (<code>0.164 ms p50</code>).
+              Mints a per-tenant 256-bit CMK wrapping secret and 256-bit Data Encryption Key (<code>DEK</code>). Seals <code>raw_envelope_json</code> and <code>sanitized_envelope_json</code> using <code>SHA256-CTR</code> keystream + <code>HMAC-SHA256</code> AEAD tag bound to Additional Authenticated Data <code>AAD = f"{tenant_id}|{event_id}|{cmk_arn}"</code> inside SQLite WAL (<code>PRAGMA journal_mode=WAL</code>, index <code>idx_events_tenant_status</code>) at <strong><code>5,182.4 events/sec</code></strong> (<code>0.164 ms p50</code>).
             </div>
           </div>
         </div>
 
         <div class="impl-card">
           <div class="impl-head">
-            <span>MODULE 02 · VPC PII VAULT &amp; HASH LEDGER</span>
+            <span>MODULE 02 · PII VAULT &amp; HASH LEDGER</span>
             <span style="color:#93C5FD;">vault_lineage/storage_engine.py</span>
           </div>
           <div class="impl-body">
             <h3 style="font-size:1.08rem; font-weight:800;">Deterministic PII Tokenization &amp; Tamper-Evident Audit Chain</h3>
             <div class="layer-plain">
-              <strong>Plain-English Intuition:</strong> Before any text is saved, a scanner spots emails, credit cards, SSNs, phone numbers, IP addresses, and leaked AWS keys, swapping them for consistent pseudonyms so ML engineers can still see conversation structure without ever seeing real personal data.
+              Before writing to disk, an inline tokenizer replaces emails, credit cards, SSNs, phone numbers, IP addresses, and AWS access keys with deterministic tenant-scoped tokens so ML pipelines preserve prompt structure without storing raw personal data.
             </div>
             <div class="layer-hood">
-              <strong>Under the Hood (Regex + HMAC Chain):</strong> Evaluates 6 compiled PII patterns in priority order and computes <code>HMAC-SHA256(tenant_salt, raw_match)[:8]</code> → <code>&lt;PII:SSN:4d91be07&gt;</code> (tokenizing <strong><code>1,800</code> PII spans</strong> with <code>0</code> raw leaks). Every state mutation appends to SQLite <code>audit_ledger</code> with <code>entry_hash = SHA256(prev_hash || seq || action || tenant_id || details_json)</code> (<strong><code>1,374 / 1,374</code> verified</strong>).
+              Evaluates 6 compiled PII patterns in priority order and computes <code>HMAC-SHA256(tenant_salt, raw_match)[:8]</code> → <code>&lt;PII:SSN:4d91be07&gt;</code> (tokenizing <strong><code>1,800</code> PII spans</strong> with <code>0</code> raw leaks). Every state mutation appends to SQLite <code>audit_ledger</code> with <code>entry_hash = SHA256(prev_hash || seq || action || tenant_id || details_json)</code> (<strong><code>1,374 / 1,374</code> verified</strong>).
             </div>
           </div>
         </div>
@@ -1578,28 +1562,28 @@
             <span style="color:#FDE68A;">vault_lineage/storage_engine.py · server.py</span>
           </div>
           <div class="impl-body">
-            <h3 style="font-size:1.08rem; font-weight:800;">Role × Purpose Authorization &amp; Zero-Leak ML Snapshot Builder</h3>
+            <h3 style="font-size:1.08rem; font-weight:800;">Role × Purpose Authorization &amp; Filtered ML Snapshot Builder</h3>
             <div class="layer-plain">
-              <strong>Plain-English Intuition:</strong> Even if someone has database access, VaultLineage checks <em>who</em> is asking and <em>what</em> they are building. An analytics engineer can run aggregate charts, but if they try to export an AI training dataset—or if a tenant opted out five milliseconds ago—the request is blocked on the spot.
+              Every dataset export checks both the caller's role and each tenant's live consent policy at query time. An analytics engineer can compute aggregate telemetry, while an attempt to export an ML training snapshot is rejected with HTTP 403 before rows are read.
             </div>
             <div class="layer-hood">
-              <strong>Under the Hood (ACL Matrix &amp; SQLite JOIN):</strong> Evaluates <code>ROLE_CATALOG[role] × PURPOSE_POLICIES[purpose]</code> in <strong><code>0.028 ms p50</code></strong> (<code>0.039 ms p95</code>; <code>170/170</code> unauthorized probes rejected with HTTP <code>403</code>). Executes <code>SELECT e.* FROM encrypted_events e JOIN tenants t ON e.tenant_id = t.tenant_id WHERE t.consent_policy = 'ALLOW_ML_TRAINING' AND t.key_status = 'ACTIVE'</code> in <strong><code>15.09 ms</code></strong> (<code>600</code> admitted, <code>600</code> opted-out blocked, <strong><code>0.0%</code> leakage</strong>).
+              Evaluates <code>ROLE_CATALOG[role] × PURPOSE_POLICIES[purpose]</code> in <strong><code>0.028 ms p50</code></strong> (<code>0.039 ms p95</code>; <code>170/170</code> unauthorized probes rejected with HTTP <code>403</code>). Executes <code>SELECT e.* FROM encrypted_events e JOIN tenants t ON e.tenant_id = t.tenant_id WHERE t.consent_policy = 'ALLOW_ML_TRAINING' AND t.key_status = 'ACTIVE'</code> in <strong><code>15.09 ms</code></strong> (<code>600</code> admitted, <code>600</code> opted-out blocked, <strong><code>0.0%</code> leakage</strong>).
             </div>
           </div>
         </div>
 
         <div class="impl-card">
           <div class="impl-head">
-            <span>MODULE 04 · RTBF CRYPTO-SHRED &amp; BEDROCK AUDITOR</span>
+            <span>MODULE 04 · CRYPTO-SHRED &amp; BEDROCK AUDITOR</span>
             <span style="color:#DDD6FE;">vault_lineage/storage_engine.py · benchmarks.py</span>
           </div>
           <div class="impl-body">
-            <h3 style="font-size:1.08rem; font-weight:800;">Irreversible DEK Destruction, Shard Cascade &amp; Live Nova Memo</h3>
+            <h3 style="font-size:1.08rem; font-weight:800;">DEK Zeroization, Shard Cascade &amp; Live Bedrock Memo</h3>
             <div class="layer-plain">
-              <strong>Plain-English Intuition:</strong> Instead of trusting that every backup file was found, destroying a tenant's unique encryption key turns any remaining ciphertext into unreadable random noise—while VaultLineage simultaneously scrubs downstream ML snapshots and asks Amazon Bedrock Nova to draft an auditor-ready legal attestation.
+              Zeroing a tenant's dedicated 256-bit key renders every historical ciphertext permanently undecipherable, while SQLite purges downstream feature shards and training snapshots and Amazon Bedrock generates a structured compliance summary.
             </div>
             <div class="layer-hood">
-              <strong>Under the Hood (Zeroization + Converse API):</strong> <code>delete_tenant_rtbf()</code> overwrites mutable <code>bytearray</code> DEK/CMK buffers in place with <code>0x00</code> (<strong><code>180/180</code> ciphertexts undecipherable</strong>), purges <code>feature_shard_lineage</code> + re-hashes historical <code>training_snapshots.manifest_sha256</code> in <strong><code>2.805 ms</code> mean</strong> (<code>0</code> residual rows), signs an <code>HMAC-SHA256</code> Deletion Certificate, and invokes <code>us.amazon.nova-lite-v1:0</code> (<code>2,923.03 ms p50</code> across <code>3</code> live audits).
+              <code>delete_tenant_rtbf()</code> overwrites mutable <code>bytearray</code> DEK/CMK buffers in place with <code>0x00</code> (<strong><code>180/180</code> ciphertexts undecipherable</strong>), purges <code>feature_shard_lineage</code> + re-hashes historical <code>training_snapshots.manifest_sha256</code> in <strong><code>2.805 ms</code> mean</strong> (<code>0</code> residual rows), signs an <code>HMAC-SHA256</code> Deletion Certificate, and invokes <code>us.amazon.nova-lite-v1:0</code> (<code>2,923.03 ms p50</code> across <code>3</code> live audits).
             </div>
           </div>
         </div>
@@ -1607,19 +1591,18 @@
     </div>
   </section>
 
-  <!-- §04 · DESIGN TRADE-OFFS -->
+  <!-- 04 · TRADE-OFFS -->
   <section id="design-tradeoffs" class="section">
-    <div id="why-it-wins"></div>
     <div class="container">
       <div class="section-header">
         <div>
-          <span class="section-kicker">§04 · Design Trade-Offs</span>
-          <h2 class="section-title">Envelope Crypto-Shredding &amp; Lineage Gate vs. Conventional AI Data Lakes</h2>
+          <span class="section-kicker">04 · Trade-Offs</span>
+          <h2 class="section-title">Trade-Offs</h2>
           <p class="section-desc">
-            Why per-tenant KMS envelope encryption and relational lineage joins outperform shared-key object lakes and ad-hoc SQL filters—and the exact engineering trade-offs involved.
+            Comparing per-tenant envelope encryption and relational lineage joins against shared-key data lakes and manual SQL filters.
           </p>
         </div>
-        <span class="tag tag-accent">Zero-Serverless Footprint (No EC2 / RDS / GPU)</span>
+        <span class="tag tag-accent">Serverless Storage &amp; Keyring</span>
       </div>
 
       <div class="table-wrap" style="margin-bottom:1.25rem;">
@@ -1662,64 +1645,61 @@
       <div class="grid-3">
         <div class="card">
           <span class="step-badge">TRADE-OFF 01 · DUAL ENVELOPES</span>
-          <h3 style="font-size:1.02rem; font-weight:800; margin-bottom:0.45rem;">~1.8× Ciphertext Storage vs. Zero-Copy Safe ML Reads</h3>
+          <h3 style="font-size:1.02rem; font-weight:800; margin-bottom:0.45rem;">~1.8× Ciphertext Storage vs. Safe ML Reads</h3>
           <p style="font-size:0.87rem; color:var(--ink-muted);">
-            <strong>Plain English:</strong> Storing both a redacted envelope and a raw auditor envelope uses slightly more disk space, but means ML pipelines never touch raw PII.<br/>
-            <strong>Under the Hood:</strong> Dual AEAD sealing adds only <code>0.164 ms p50</code> at ingest while guaranteeing <code>0</code> raw PII leaks across <code>1,800</code> spans without runtime regex re-scanning.
+            Storing both a PII-tokenized envelope and a raw auditor envelope increases disk usage roughly <code>1.8×</code>, adding <code>0.164 ms p50</code> at ingest while guaranteeing <code>0</code> raw PII leaks across <code>1,800</code> spans without runtime regex re-scanning.
           </p>
         </div>
         <div class="card">
           <span class="step-badge">TRADE-OFF 02 · PER-TENANT DEKS</span>
-          <h3 style="font-size:1.02rem; font-weight:800; margin-bottom:0.45rem;">Keyring Metadata Overhead vs. O(1) Crypto-Shredding</h3>
+          <h3 style="font-size:1.02rem; font-weight:800; margin-bottom:0.45rem;">Keyring Bookkeeping vs. O(1) Crypto-Shredding</h3>
           <p style="font-size:0.87rem; color:var(--ink-muted);">
-            <strong>Plain English:</strong> Managing one key per tenant is slightly more bookkeeping than one global key, but makes legal deletion instantaneous.<br/>
-            <strong>Under the Hood:</strong> Wrapping per-tenant 256-bit DEKs lets RTBF zeroize key material + purge SQLite lineage in <code>2.805 ms</code> instead of rewriting multi-gigabyte object archives.
+            Maintaining one wrapped 256-bit DEK per tenant requires per-tenant key metadata in SQLite, in exchange for zeroizing key material and purging downstream lineage in <code>2.805 ms</code> instead of rewriting multi-gigabyte object archives.
           </p>
         </div>
         <div class="card">
           <span class="step-badge">TRADE-OFF 03 · DETERMINISTIC + LLM</span>
-          <h3 style="font-size:1.02rem; font-weight:800; margin-bottom:0.45rem;">Code Enforces Deletion; Bedrock Writes the Audit Trail</h3>
+          <h3 style="font-size:1.02rem; font-weight:800; margin-bottom:0.45rem;">Code Enforces Deletion; Bedrock Drafts the Audit Memo</h3>
           <p style="font-size:0.87rem; color:var(--ink-muted);">
-            <strong>Plain English:</strong> Never trust an LLM to decide who gets access or whether data was deleted—use deterministic code for enforcement and AI for human-readable compliance reporting.<br/>
-            <strong>Under the Hood:</strong> Python + SQLite enforces <code>100.0%</code> ACL &amp; shred invariants first; <code>us.amazon.nova-lite-v1:0</code> summarizes verified SHA-256 digests after completion.
+            Access checks and key destruction run deterministically in Python and SQLite first (<code>100.0%</code> ACL and shred enforcement); <code>us.amazon.nova-lite-v1:0</code> is invoked only afterward to summarize verified SHA-256 deletion digests for auditors.
           </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- §05 · INTERACTIVE STUDIO & §06 · BENCHMARKS -->
+  <!-- 05 · LIVE DEMO & 06 · BENCHMARKS -->
   <main id="studio-tabs" class="container tabs-wrapper">
     <div class="section-header">
       <div>
-        <span class="section-kicker">§05 · Interactive Studio</span>
-        <h2 class="section-title">Live Envelope Storage, ML Snapshot Gate, RTBF Shredder &amp; Benchmarks</h2>
+        <span class="section-kicker">05 · Live Demo</span>
+        <h2 class="section-title">Live Demo</h2>
         <p class="section-desc">
-          Every button below executes real HTTP requests against the Python 3.12 Lambda + SQLite + Amazon Bedrock Nova backend.
+          Each tab sends live HTTP requests to the Python 3.12 Lambda, SQLite WAL, and Amazon Bedrock backend.
         </p>
       </div>
       <button type="button" class="btn btn-secondary btn-sm" onclick="resetDemoState()">↺ Reset All 5 Tenants</button>
     </div>
 
-    <div class="tab-bar" role="tablist" aria-label="VaultLineage Interactive Live Studio">
+    <div class="tab-bar" role="tablist" aria-label="VaultLineage Live Demo">
       <button type="button" class="tab-btn active" role="tab" aria-selected="true" data-tab="ingest-consent" onclick="switchTab('ingest-consent')">
-        <span class="tab-btn-eyebrow">Studio 01 · KMS &amp; Consent Plane</span>
-        <span class="tab-btn-title">1. Envelope Ingestion &amp; Opt-Out</span>
+        <span class="tab-btn-eyebrow">Demo 01 · Encryption &amp; Consent</span>
+        <span class="tab-btn-title">1. Encrypt Events &amp; Toggle Opt-Out</span>
         <span class="tab-btn-metric">5,182.4 ev/s · Live Consent Toggles</span>
       </button>
       <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="ml-snapshot" onclick="switchTab('ml-snapshot')">
-        <span class="tab-btn-eyebrow">Studio 02 · Compliant ML Builder</span>
-        <span class="tab-btn-title">2. ML Training Snapshot Gate</span>
+        <span class="tab-btn-eyebrow">Demo 02 · Training Dataset Gate</span>
+        <span class="tab-btn-title">2. Build Filtered Training Sets</span>
         <span class="tab-btn-metric">0.0% Opt-Out Leakage · 15.09 ms Build</span>
       </button>
       <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="rtbf-delete" onclick="switchTab('rtbf-delete')">
-        <span class="tab-btn-eyebrow">Studio 03 · GDPR/CCPA + Bedrock</span>
-        <span class="tab-btn-title">3. Crypto-Shred &amp; Lineage Purge</span>
+        <span class="tab-btn-eyebrow">Demo 03 · Right-to-Delete &amp; Bedrock</span>
+        <span class="tab-btn-title">3. Delete a Tenant &amp; Audit Proof</span>
         <span class="tab-btn-metric">2.805 ms Purge · Live Nova Audit</span>
       </button>
       <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="benchmarks" onclick="switchTab('benchmarks')">
-        <span class="tab-btn-eyebrow">Studio 04 · Verified Telemetry</span>
-        <span class="tab-btn-title">4. Measured Benchmark Suite</span>
+        <span class="tab-btn-eyebrow">Demo 04 · Benchmark Results</span>
+        <span class="tab-btn-title">4. View &amp; Re-Run Benchmarks</span>
         <span class="tab-btn-metric">1,200 SQLite Events · 3 Live Audits</span>
       </button>
     </div>
@@ -1727,10 +1707,7 @@
     <!-- TAB 1: ENVELOPE-ENCRYPTED INGESTION & PER-TENANT CONSENT PLANE -->
     <section id="panel-ingest-consent" class="tab-panel active" role="tabpanel">
       <div class="sandbox-guide">
-        <strong>🧭 How to Use This Sandbox (What to Click &amp; What Happens):</strong>
-        (1) Click any tenant's consent pill on the left to flip between <code>ALLOW_ML_TRAINING</code> and <code>ANALYTICS_ONLY_OPTOUT_ML</code> in live SQLite;
-        (2) Click one of the <strong>1-Click PII Presets</strong> and press <strong>"🔐 Seal &amp; Append Encrypted Event"</strong> to watch PII get tokenized and sealed under a 256-bit DEK;
-        (3) Switch the <strong>Viewing Data Interface As Role</strong> dropdown on the right (<code>security_auditor</code> vs. <code>ml_scientist</code> vs. <code>external_contractor</code>) and click any event row to compare raw AEAD ciphertext against role-authorized plaintext.
+        Toggle any tenant's consent policy on the left, load a PII preset and click <strong>Seal &amp; Append Encrypted Event</strong>, then switch the <strong>Viewing Data Interface As Role</strong> selector on the right to compare on-disk AEAD ciphertext against role-scoped decrypted text.
       </div>
       <div class="sim-header">
         <div>
@@ -1866,8 +1843,7 @@
     <!-- TAB 2: COMPLIANT ML TRAINING DATASET SNAPSHOT BUILDER -->
     <section id="panel-ml-snapshot" class="tab-panel" role="tabpanel">
       <div class="sandbox-guide">
-        <strong>🧭 How to Use This Sandbox (What to Click &amp; What Happens):</strong>
-        Click <strong>"✅ ML Scientist → Foundation SFT"</strong> to build a compliant training manifest in SQLite—notice how opted-out tenants are automatically quarantined on the right with <code>0.0%</code> leakage and raw PII stays scrubbed. Then click <strong>"🛑 Analytics Eng → ML Build (403 Block)"</strong> to verify that an analytics principal is rejected at the purpose gate in <code>0.028 ms p50</code> before any row is read.
+        Click <strong>✅ ML Scientist → Foundation SFT</strong> to build a filtered training manifest in SQLite where opted-out tenants are excluded (<code>0.0%</code> leakage) and PII remains tokenized. Click <strong>🛑 Analytics Eng → ML Build (403 Block)</strong> to verify that an unauthorized role is rejected at the purpose gate in <code>0.028 ms p50</code>.
       </div>
       <div class="sim-header">
         <div>
@@ -2012,8 +1988,7 @@
     <!-- TAB 3: GDPR/CCPA RIGHT-TO-DELETE CRYPTO-SHREDDING & LINEAGE PURGE -->
     <section id="panel-rtbf-delete" class="tab-panel" role="tabpanel">
       <div class="sandbox-guide">
-        <strong>🧭 How to Use This Sandbox (What to Click &amp; What Happens):</strong>
-        Select a tenant (for example, <code>tenant-euro-nordic</code>) and click the red <strong>"🔥 Execute Crypto-Shred &amp; Lineage Purge"</strong> button. Watch all 4 stages in the SVG lineage DAG turn shredded as the tenant's 256-bit KMS DEK is zeroized, downstream Feature/LoRA shards &amp; ML snapshots are re-compacted (<code>0</code> residual rows), a signed SHA-256 Deletion Certificate is minted, and live <strong>Amazon Bedrock Nova</strong> generates the legal attestation memo.
+        Select a tenant (such as <code>tenant-euro-nordic</code>) and click <strong>🔥 Execute Crypto-Shred &amp; Lineage Purge</strong> to zeroize its 256-bit KMS DEK, purge downstream feature shards and ML snapshots (<code>0</code> residual rows), mint a signed SHA-256 Deletion Certificate, and invoke <strong>Amazon Bedrock Nova</strong> for a compliance memo.
       </div>
       <div class="sim-header">
         <div>
@@ -2103,9 +2078,7 @@
     <!-- TAB 4: MEASURED STORAGE, OPT-OUT & DELETION SLA BENCHMARK SUITE -->
     <section id="panel-benchmarks" class="tab-panel" role="tabpanel">
       <div class="sandbox-guide">
-        <strong>🧭 How to Read &amp; Re-Run These Benchmarks:</strong>
-        <strong>Plain English:</strong> Every bar and latency figure below comes from executing real SQLite WAL writes, real HMAC/AEAD encryption, real role checks, and real AWS Bedrock Nova API calls—zero simulated sleep timers.
-        <strong>What to Click:</strong> Press <strong>"⚡ Run Live Lambda + Bedrock Benchmark"</strong> on the top right to execute a fresh 600-event + live Bedrock audit benchmark directly inside AWS Lambda and inspect the raw JSON output on the left.
+        Every throughput and latency figure below comes from executing SQLite WAL writes, HMAC/AEAD encryption, role checks, and Amazon Bedrock API calls. Click <strong>⚡ Run Live Lambda + Bedrock Benchmark</strong> on the right to run a fresh 600-event + live Bedrock audit benchmark inside AWS Lambda.
       </div>
       <div class="sim-header">
         <div>
@@ -2201,7 +2174,7 @@
   <div class="container">
     <footer class="footer">
       <div>
-        <strong>VaultLineage v1.0</strong> · Serverless AWS CloudFront + Private S3 (OAC) + Python 3.12 SQLite Lambda + Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)
+        <strong>VaultLineage</strong> · Privacy-Safe AI Data Storage · Powered by Amazon Bedrock
       </div>
       <div class="mono" style="font-size:0.74rem;">
         <a href="https://d3bfhuibgzllcf.cloudfront.net" target="_blank" rel="noopener" style="color:var(--ink);">AgentGuard</a> ·
@@ -2363,13 +2336,12 @@
       try {
         const res = await fetch('/api/health', { method: 'GET' });
         if (res.ok) {
-          const data = await res.json();
           document.getElementById('runtimeModeText').textContent =
-            `Live AWS Python ${data.python_version || '3.12'} API · Bedrock (${data.bedrock_model || 'us.amazon.nova-lite-v1:0'}) · Audit Chain: ${data.audit_chain_valid ? 'OK' : 'WARN'}`;
+            'Live on AWS · Powered by Amazon Bedrock';
         }
       } catch (_) {
         document.getElementById('runtimeModeText').textContent =
-          'Standalone Studio Preview · SQLite KMS Envelope Engine';
+          'Live on AWS · Powered by Amazon Bedrock';
       }
     }
 
@@ -2890,17 +2862,18 @@
       document.getElementById('benchRawJsonBox').textContent = JSON.stringify(b, null, 2);
 
       // Keep top KPI cards strictly synced to measured JSON
-      document.getElementById('kpiLeakVal').textContent = `${Number(b.opt_out_leakage_rate_pct).toFixed(1)}%`;
+      document.getElementById('kpiLeakVal').textContent = `${b.opt_out_leakage_count} / ${b.events_benchmarked.toLocaleString()}`;
       document.getElementById('kpiLeakSub').textContent =
-        `${b.opt_out_leakage_count} / ${b.events_benchmarked.toLocaleString()} SQLite events · ${b.pii_spans_tokenized_total.toLocaleString()} PII spans tokenized (${b.raw_pii_leakage_count} leaks)`;
-      document.getElementById('kpiPurgeVal').textContent = `${Number(b.downstream_lineage_purge_pct).toFixed(1)}%`;
+        `Customer data marked "do not train" never enters ML snapshots (${b.pii_spans_tokenized_total.toLocaleString()} PII spans tokenized)`;
+      document.getElementById('kpiPurgeVal').textContent = `${b.crypto_shred_sql_purge_mean_ms} ms`;
       document.getElementById('kpiPurgeSub').textContent =
-        `${b.residual_deleted_records} residual records · ${b.crypto_shred_sql_purge_mean_ms} ms mean SQLite + DEK cascade`;
+        `Destroys the tenant's encryption key and purges ${Number(b.downstream_lineage_purge_pct).toFixed(1)}% of downstream training shards (${b.residual_deleted_records} residual rows)`;
+      document.getElementById('kpiCryptoVal').textContent = `${b.ingest_throughput_events_per_sec.toLocaleString()} ev/s`;
       document.getElementById('kpiCryptoSub').textContent =
-        `${b.ingest_throughput_events_per_sec} ev/s (${b.p50_envelope_ingest_ms} ms p50) · ${b.shredded_ciphertexts_blocked}/${b.shredded_ciphertexts_tested} shredded locked`;
+        `${b.p50_envelope_ingest_ms} ms median seal latency · ${b.shredded_ciphertexts_blocked} / ${b.shredded_ciphertexts_tested} deleted envelopes locked`;
       document.getElementById('kpiAuthVal').textContent = `${b.purpose_auth_p50_ms} ms`;
       document.getElementById('kpiAuthSub').textContent =
-        `${b.purpose_auth_p95_ms} ms p95 (${b.purpose_auth_probes} probes) · ${b.unauthorized_blocks_count}/${b.unauthorized_probes_count} blocked (${b.unauthorized_access_block_rate_pct}%)`;
+        `${b.unauthorized_blocks_count} / ${b.unauthorized_probes_count} unauthorized probes blocked (${b.unauthorized_access_block_rate_pct}%) · ${b.audit_entries_verified.toLocaleString()} audit entries verified`;
 
       const rows = [
         ['SQLite WAL + KMS Envelope Ingestion Throughput', `${b.ingest_throughput_events_per_sec} events/sec`, `${b.events_benchmarked} events across ${b.tenants_benchmarked} tenants`, 'MEASURED'],
@@ -3067,8 +3040,8 @@
           </div>
           <div class="mono" style="font-size:0.73rem; color:var(--accent-main); margin-bottom:0.55rem;">Module / Resource: <code>${escapeHtml(info.module)}</code></div>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
-            <div class="layer-plain"><strong>Plain English:</strong> ${escapeHtml(info.plain)}</div>
-            <div class="layer-hood"><strong>Under the Hood:</strong> ${escapeHtml(info.hood)}</div>
+            <div class="layer-plain">${escapeHtml(info.plain)}</div>
+            <div class="layer-hood">${escapeHtml(info.hood)}</div>
           </div>
         `;
       }
