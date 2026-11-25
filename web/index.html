@@ -1011,7 +1011,8 @@
       font-size: 0.83rem;
       color: var(--ink-muted);
     }
-  </style>
+  .plain-callout code,.worked-step code,.layer-plain code,.layer-hood code,.sandbox-guide code{font:500 .88em var(--mono);padding:1px 5px;border-radius:2px}
+</style>
 </head>
 <body>
   <!-- Sticky Topbar -->
@@ -1181,7 +1182,7 @@
           </div>
           <div class="worked-step">
             <strong style="color:#15803D;">Step 4 — Customer Triggers GDPR Art. 17 Right-to-Delete (<code>2.805 ms</code>):</strong><br/>
-            Months later, Nordic Retail terminates its contract under GDPR Art. 17. VaultLineage overwrites Nordic Retail's 256-bit CMK/DEK bytes in memory with <code>0x00</code> (rendering <strong><code>180/180</code> historical ciphertexts permanently undecipherable</strong>), purges every downstream ML snapshot &amp; shard (`0` residual records), re-seals SHA-256 manifests, and calls live <strong>Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)</strong> to sign a legal compliance memo.
+            Months later, Nordic Retail terminates its contract under GDPR Art. 17. VaultLineage overwrites Nordic Retail's 256-bit CMK/DEK bytes in memory with <code>0x00</code> (rendering <strong><code>180/180</code> historical ciphertexts permanently undecipherable</strong>), purges every downstream ML snapshot &amp; shard (<code>0</code> residual records), re-seals SHA-256 manifests, and calls live <strong>Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)</strong> to sign a legal compliance memo.
           </div>
         </div>
       </div>
@@ -2012,7 +2013,7 @@
     <section id="panel-rtbf-delete" class="tab-panel" role="tabpanel">
       <div class="sandbox-guide">
         <strong>🧭 How to Use This Sandbox (What to Click &amp; What Happens):</strong>
-        Select a tenant (for example, <code>tenant-euro-nordic</code>) and click the red <strong>"🔥 Execute Crypto-Shred &amp; Lineage Purge"</strong> button. Watch all 4 stages in the SVG lineage DAG turn shredded as the tenant's 256-bit KMS DEK is zeroized, downstream Feature/LoRA shards &amp; ML snapshots are re-compacted (`0` residual rows), a signed SHA-256 Deletion Certificate is minted, and live <strong>Amazon Bedrock Nova</strong> generates the legal attestation memo.
+        Select a tenant (for example, <code>tenant-euro-nordic</code>) and click the red <strong>"🔥 Execute Crypto-Shred &amp; Lineage Purge"</strong> button. Watch all 4 stages in the SVG lineage DAG turn shredded as the tenant's 256-bit KMS DEK is zeroized, downstream Feature/LoRA shards &amp; ML snapshots are re-compacted (<code>0</code> residual rows), a signed SHA-256 Deletion Certificate is minted, and live <strong>Amazon Bedrock Nova</strong> generates the legal attestation memo.
       </div>
       <div class="sim-header">
         <div>
